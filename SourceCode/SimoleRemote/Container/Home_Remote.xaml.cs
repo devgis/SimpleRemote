@@ -163,6 +163,10 @@ namespace SimpleRemote.Container
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+
+            //liyafei
+            MessageBox.Show("Query:" + e.Source.ToString().ToString());
+
             if (e.NewValue != null)
             {
                 RemoteTreeViewItem selectItem = (RemoteTreeViewItem)e.NewValue;

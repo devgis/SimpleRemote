@@ -39,7 +39,7 @@ namespace SimpleRemote
                     partRemoteTree.Items.Add(treeItem);
                 }
         
-                //MessageBox.Show( responseBody);
+                MessageBox.Show( responseBody);
             }
             catch (Exception e)
             {
