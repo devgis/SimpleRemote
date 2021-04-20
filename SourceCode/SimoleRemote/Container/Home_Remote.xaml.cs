@@ -30,7 +30,7 @@ namespace SimpleRemote.Container
             InitializeComponent();
             RemoteItems.LoadTree(PART_RemoteTree);
             //liyafei  此处load 类型为 DbItemRemoteLink
-            RequestDAL.GetData();
+            RequestDAL.GetData(PART_RemoteTree);
 
             PART_SettingSsh = new SettingSsh();
             PART_SettingRdp = new SettingRdp();
