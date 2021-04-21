@@ -41,8 +41,6 @@
                 <KeyBinding Key="Enter" Command="{StaticResource Selection}" />
             </TextBox.InputBindings>
         </TextBox>
-
-        <!--MouseDoubleClick="TreeView_MouseDoubleClick"-->
         <TreeView
             x:Name="PART_RemoteTree"
             Margin="0,26,0,0"
@@ -51,7 +49,7 @@
             BorderBrush="#FFDDDDD8"
             BorderThickness="0,0,0,0"
             KeyDown="TreeView_KeyDown"
-            
+            MouseDoubleClick="TreeView_MouseDoubleClick"
             MouseDown="TreeView_MouseDown"
             SelectedItemChanged="TreeView_SelectedItemChanged">
             <TreeView.ContextMenu>
