@@ -66,8 +66,8 @@ namespace SimpleRemote
                         link.Type = (int)treeitem.Type;
                         link.Server = item.hosts;
                         link.PrivateKey = null;
-
-
+                        link.IsExpander1 = true;
+                        link.IsExpander2 = true;
 
                         if (treeitem.Type == RemoteType.rdp)
                         {
