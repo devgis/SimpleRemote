@@ -5,11 +5,12 @@ namespace SimpleRemote.Modes
 {
     public class DbRemoteTree
     {
-        public DbRemoteTree(string uuid, string name, RemoteType type)
+        public DbRemoteTree(string uuid, string name, RemoteType type, string state="在线")
         {
             this.uuid = uuid;
             this.Name = name;
             this.Type = type;
+            this.State = state;
             Dirs = new List<DbRemoteTree>();
             Items = new List<DbRemoteTree>();
         }
@@ -17,6 +18,7 @@ namespace SimpleRemote.Modes
         public string uuid { get; set; }
         public string Name { get; set; }
         public RemoteType Type { get; set; }
+        public string State { get; set; }
         public List<DbRemoteTree> Dirs { get; set; }
         public List<DbRemoteTree> Items { get; set; }
 

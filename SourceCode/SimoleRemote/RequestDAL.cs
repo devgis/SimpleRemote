@@ -35,7 +35,23 @@ namespace SimpleRemote
                     List<DbRemoteTree> Items = new List<DbRemoteTree>();
                     foreach (var item in rs.data)
                     {
-                        var treeitem = new DbRemoteTree(item.id.ToString(), item.server_name, RemoteType.rdp);
+                        var treeitem = new DbRemoteTree(item.id.ToString(), $"{item.server_name}-{item.remark}-{item.remarks}", RemoteType.rdp,item.online_status);
+                        switch (item.protocol)
+                        {
+                            case "ssh":
+                                treeitem.Type = RemoteType.ssh;
+                                break;
+                            case "rdp":
+                                treeitem.Type = RemoteType.rdp;
+                                break;
+                            case "telenet":
+                            case "telnet":
+                                treeitem.Type = RemoteType.telnet;
+                                break;
+                            default:
+                                treeitem.Type = RemoteType.ssh;
+                                break;
+                        }
                         Items.Add(treeitem);
 
                         DbItemRemoteLink link = new DbItemRemoteLink();
@@ -224,5 +240,11 @@ namespace SimpleRemote
             get;
             set;
         }
+        public string protocol
+        {
+            get;
+            set;
+        }
+        
     }
 }

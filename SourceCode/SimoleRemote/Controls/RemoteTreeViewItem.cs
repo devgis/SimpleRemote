@@ -32,12 +32,14 @@ namespace SimpleRemote.Controls
     {
         //属性名称1.属性类型2.该属性所有者3.即将该属性注册到那个类上4.属性默认值
         private static DependencyProperty TypeProperty = DependencyProperty.Register("RemoteType", typeof(RemoteType), typeof(RemoteTreeViewItem), new PropertyMetadata(RemoteType.dir));
+        private static DependencyProperty StateProperty = DependencyProperty.Register("State", typeof(string), typeof(RemoteTreeViewItem), new PropertyMetadata("掉线"));
 
         public RemoteTreeViewItem(DbRemoteTree remoteTree)
         {
             Header = remoteTree.Name;
             RemoteTree = remoteTree;
             RemoteType = remoteTree.Type;
+            State = remoteTree.State;
         }
 
         /// <summary>远程条目的类型</summary>
@@ -47,6 +49,11 @@ namespace SimpleRemote.Controls
             set { SetValue(TypeProperty, value); }
         }
 
+        public string State
+        {
+            get { return (string)GetValue(StateProperty); }
+            set { SetValue(StateProperty, value); }
+        }
         /// <summary>开始编辑控件的名称,资源在控件加载完毕后才有效</summary>
         public void HeaderEdit(CancelEditEventHandler EditHeaderClosing)
         {

@@ -559,6 +559,8 @@
     <Resource Include="Controls\WpfDragDrop\Icons\EffectLink.png" />
     <Resource Include="Controls\WpfDragDrop\Icons\EffectMove.png" />
     <Resource Include="Controls\WpfDragDrop\Icons\EffectNone.png" />
+    <Resource Include="Icon\OFF.png" />
+    <Resource Include="Icon\OK.png" />
     <Content Include="Lib\MemoryModule.dll" />
     <None Include="Update.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -62,7 +62,7 @@
                         </Paragraph>
                     </FlowDocument>
                 </RichTextBox>
-                <Button x:Name="Button_Update" Content="检查更新" Grid.Row="5" Width="100" Margin="206,0" Style="{StaticResource MetroFlatButton}" Click="Button_Update_Click"/>
+                <Button x:Name="Button_Update" Content="检查更新" Grid.Row="5" Width="100" Margin="206,0" Style="{StaticResource MetroFlatButton}" Click="Button_Update_Click" Visibility="Hidden"/>
                 <TextBlock x:Name="Text_Describe" Grid.Row="7" TextWrapping="Wrap" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <TextBox x:Name="TextBox_Log" Grid.Row="9" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0" Height="200" BorderBrush="#FFDDDDD8" mah:ControlsHelper.FocusBorderBrush="#FFDDDDD8" mah:ControlsHelper.MouseOverBorderBrush="#FFDDDDD8" IsReadOnly="True" Visibility="Collapsed" FontSize="14" />
             </Grid>
