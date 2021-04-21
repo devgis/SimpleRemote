@@ -63,9 +63,9 @@ namespace SimpleRemote
                         link.ExternalWindowHeight = 600;
                         link.ExternalWindowWidth = 800;
                         link.Id = item.id.ToString();
-                        link.Type = 0;
+                        link.Type = (int)treeitem.Type;
                         link.Server = item.hosts;
-                        link.PrivateKey = string.Empty;
+                        link.PrivateKey = null;
 
                         if (!DbItemRemoteLinkDIC.ContainsKey(item.id.ToString()))
                         {
