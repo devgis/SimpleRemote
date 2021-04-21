@@ -67,6 +67,21 @@ namespace SimpleRemote
                         link.Server = item.hosts;
                         link.PrivateKey = null;
 
+
+
+                        if (treeitem.Type == RemoteType.rdp)
+                        {
+                            link.ItemSetting = new DbItemSettingRdp();
+                        }
+                        else if (treeitem.Type == RemoteType.ssh)
+                        {
+                            link.ItemSetting = new DbItemSettingSsh();
+                        }
+                        else if (treeitem.Type == RemoteType.telnet)
+                        {
+                            link.ItemSetting = new DbItemSettingTelnet();
+                        }
+
                         if (!DbItemRemoteLinkDIC.ContainsKey(item.id.ToString()))
                         {
                             DbItemRemoteLinkDIC.Add(item.id.ToString(), link);

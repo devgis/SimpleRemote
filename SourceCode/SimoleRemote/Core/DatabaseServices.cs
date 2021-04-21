@@ -282,9 +282,9 @@ namespace SimpleRemote.Core
             //return null;
 
             //liyafei
-            if (itemRemoteLink.Type == (int)RemoteType.rdp) return new DbItemSettingRdp();
-            if (itemRemoteLink.Type == (int)RemoteType.ssh) return new DbItemSettingSsh();
-            if (itemRemoteLink.Type == (int)RemoteType.telnet) return new DbItemSettingTelnet();
+            if (itemRemoteLink.Type == (int)RemoteType.rdp) return (itemRemoteLink.ItemSetting as DbItemSettingRdp);
+            if (itemRemoteLink.Type == (int)RemoteType.ssh) return (itemRemoteLink.ItemSetting as DbItemSettingSsh);
+            if (itemRemoteLink.Type == (int)RemoteType.telnet) return (itemRemoteLink.ItemSetting as DbItemSettingTelnet);
             return null;
 
         }
