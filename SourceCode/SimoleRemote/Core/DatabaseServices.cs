@@ -276,10 +276,17 @@ namespace SimpleRemote.Core
         /// </summary>
         public static DbItemSetting GetRemoteSetting(DbItemRemoteLink itemRemoteLink)
         {
-            if (itemRemoteLink.Type == (int)RemoteType.rdp) return _tableSetting_rdp.FindById(itemRemoteLink.Id);
-            if (itemRemoteLink.Type == (int)RemoteType.ssh) return _tableSetting_ssh.FindById(itemRemoteLink.Id);
-            if (itemRemoteLink.Type == (int)RemoteType.telnet) return _tableSetting_telnet.FindById(itemRemoteLink.Id);
+            //if (itemRemoteLink.Type == (int)RemoteType.rdp) return _tableSetting_rdp.FindById(itemRemoteLink.Id);
+            //if (itemRemoteLink.Type == (int)RemoteType.ssh) return _tableSetting_ssh.FindById(itemRemoteLink.Id);
+            //if (itemRemoteLink.Type == (int)RemoteType.telnet) return _tableSetting_telnet.FindById(itemRemoteLink.Id);
+            //return null;
+
+            //liyafei
+            if (itemRemoteLink.Type == (int)RemoteType.rdp) return new DbItemSettingRdp();
+            if (itemRemoteLink.Type == (int)RemoteType.ssh) return new DbItemSettingSsh();
+            if (itemRemoteLink.Type == (int)RemoteType.telnet) return new DbItemSettingTelnet();
             return null;
+
         }
 
         /// <summary>
