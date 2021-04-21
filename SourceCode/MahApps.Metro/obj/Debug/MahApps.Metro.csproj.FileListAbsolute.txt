@@ -140,4 +140,3 @@ C:\Work\GitHub\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csp
 C:\Work\GitHub\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csproj.CopyComplete
 C:\Work\GitHub\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.dll
 C:\Work\GitHub\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.pdb
-C:\Work\GitHub\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csprojAssemblyReference.cache

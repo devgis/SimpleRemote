@@ -205,7 +205,9 @@ namespace SimpleRemote.Core
         {
             if (treeTtem.RemoteType == RemoteType.dir) return;
             IRemoteControl remoteControl = null;
-            DbItemRemoteLink itemRemoteLink = DatabaseServices.GetRemoteLink(treeTtem.uuid);
+            //liyafei
+            //DbItemRemoteLink itemRemoteLink = DatabaseServices.GetRemoteLink(treeTtem.uuid);
+            DbItemRemoteLink itemRemoteLink = RequestDAL.GetItemRemoteLink(treeTtem.uuid);
             if (string.IsNullOrEmpty(itemRemoteLink.Server))
             {
                 throw new Exception("服务器地址不能为空。");
@@ -213,7 +215,10 @@ namespace SimpleRemote.Core
 
             DbItemSetting itemSetting = DatabaseServices.GetRemoteSetting(itemRemoteLink);
             if (openMode == DbItemSetting.OPEN_DEFAULT) openMode = itemSetting.DefaultSetting.GetOpenMode();
-
+            if (_remoteRunTime == null)
+            {
+                _remoteRunTime = new Dictionary<string, RemoteRunTime>();
+            }
             //如果指定的远程桌面有在后台运行,则跳转
             if (_remoteRunTime.ContainsKey(treeTtem.uuid))
             {
@@ -363,7 +368,9 @@ namespace SimpleRemote.Core
         /// </summary>
         public static void GetItemRemoteLink(string uuid)
         {
-            ItemRemoteLink = DatabaseServices.GetRemoteLink(uuid);
+            //liyafei changed this 
+            //ItemRemoteLink = DatabaseServices.GetRemoteLink(uuid);
+            ItemRemoteLink = RequestDAL.GetItemRemoteLink(uuid);
         }
 
         /// <summary>

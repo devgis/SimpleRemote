@@ -28,7 +28,7 @@ namespace SimpleRemote.Container
         public Home_Remote()
         {
             InitializeComponent();
-            RemoteItems.LoadTree(PART_RemoteTree);
+            //RemoteItems.LoadTree(PART_RemoteTree);
             //liyafei  此处load 类型为 DbItemRemoteLink
             RequestDAL.GetData(PART_RemoteTree);
 
@@ -74,8 +74,8 @@ namespace SimpleRemote.Container
                     menuItemKeyValues["MenuItem_Link"].IsEnabled = false;
                     menuItemKeyValues["MenuItem_LinkBackend"].IsEnabled = false;
                     menuItemKeyValues["MenuItem_LinkSeparate"].IsEnabled = false;
-                    menuItemKeyValues["MenuItem_Rename"].IsEnabled = false;
-                    menuItemKeyValues["MenuItem_Delete"].IsEnabled = false;
+                    //menuItemKeyValues["MenuItem_Rename"].IsEnabled = false;
+                    //menuItemKeyValues["MenuItem_Delete"].IsEnabled = false;
                 }
             }
         }
@@ -115,17 +115,17 @@ namespace SimpleRemote.Container
                 if (menuItem == null) return;
                 RemoteTreeViewItem selectItem = (RemoteTreeViewItem)PART_RemoteTree.SelectedItem;
                 if (menuItem.Name == "MenuItem_NewDir") NewRemoteItem(selectItem, RemoteType.dir);
-                else if (menuItem.Name == "MenuItem_Newrdp") NewRemoteItem(selectItem, RemoteType.rdp);
-                else if (menuItem.Name == "MenuItem_Newssh") NewRemoteItem(selectItem, RemoteType.ssh);
-                else if (menuItem.Name == "MenuItem_NewTelnet") NewRemoteItem(selectItem, RemoteType.telnet);
-                else if (menuItem.Name == "MenuItem_Delete") DeleteRemoteItem(selectItem);
+                //else if (menuItem.Name == "MenuItem_Newrdp") NewRemoteItem(selectItem, RemoteType.rdp);
+                //else if (menuItem.Name == "MenuItem_Newssh") NewRemoteItem(selectItem, RemoteType.ssh);
+                //else if (menuItem.Name == "MenuItem_NewTelnet") NewRemoteItem(selectItem, RemoteType.telnet);
+                //else if (menuItem.Name == "MenuItem_Delete") DeleteRemoteItem(selectItem);
                 else if (menuItem.Name == "MenuItem_Link") RemoteItems.Open(selectItem, DbItemSetting.OPEN_TAB);
                 else if (menuItem.Name == "MenuItem_LinkBackend") RemoteItems.Open(selectItem, DbItemSetting.OPEN_TAB_BACKSTAGE);
                 else if (menuItem.Name == "MenuItem_LinkSeparate") RemoteItems.Open(selectItem, DbItemSetting.OPEN_WINDOW);
-                else if (menuItem.Name == "MenuItem_Rename") selectItem.HeaderEdit(Home_Tree_EditHeaderClosing);
-                else if (menuItem.Name == "MenuItem_Shear") RemoteItems.Shear(selectItem);
-                else if (menuItem.Name == "MenuItem_Copy") RemoteItems.Copy(selectItem);
-                else if (menuItem.Name == "MenuItem_Paste") RemoteItems.Paste(selectItem);
+                //else if (menuItem.Name == "MenuItem_Rename") selectItem.HeaderEdit(Home_Tree_EditHeaderClosing);
+                //else if (menuItem.Name == "MenuItem_Shear") RemoteItems.Shear(selectItem);
+                //else if (menuItem.Name == "MenuItem_Copy") RemoteItems.Copy(selectItem);
+                //else if (menuItem.Name == "MenuItem_Paste") RemoteItems.Paste(selectItem);
             }
             catch (Exception ex)
             {
@@ -163,10 +163,6 @@ namespace SimpleRemote.Container
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-
-            //liyafei
-            MessageBox.Show("Query:" + e.Source.ToString().ToString());
-
             if (e.NewValue != null)
             {
                 RemoteTreeViewItem selectItem = (RemoteTreeViewItem)e.NewValue;
@@ -174,7 +170,7 @@ namespace SimpleRemote.Container
                 if (selectItem.RemoteType != RemoteType.dir)
                 {
                     ScrollViewer.Visibility = Visibility.Visible;
-                    RemoteItems.GetItemRemoteLink(selectItem.uuid);
+                    RemoteItems.GetItemRemoteLink(selectItem.uuid); 
                     ScrollViewer.DataContext = RemoteItems.ItemRemoteLink;
                     TextBox_Password.Password = RemoteItems.ItemRemoteLink.Password;
                     TextBox_Name.Text = RemoteItems.ItemRemoteLink.Name;
