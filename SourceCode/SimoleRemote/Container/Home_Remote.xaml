@@ -126,6 +126,11 @@
                         Click="MenuItem_Click"
                         Header="删除"
                         InputGestureText="Delete" />-->
+                    <MenuItem
+                        x:Name="MenuItem_Refresh"
+                        Click="MenuItem_Refresh_Click"  
+                        Header="刷新" />
+                    <Separator />
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>

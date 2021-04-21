@@ -376,5 +376,11 @@ namespace SimpleRemote.Container
         {
             RemoteItems.Screening(Text_Screen.Text);
         }
+
+        private void MenuItem_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            //刷新操作
+            RequestDAL.GetData(PART_RemoteTree);
+        }
     }
 }
