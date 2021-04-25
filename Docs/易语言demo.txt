@@ -1,0 +1,103 @@
+.版本 2
+.支持库 spec
+
+.子程序 _销毁, , , 当基于本类的对象被销毁前，此方法会被自动调用
+
+
+
+.子程序 get_qrConnect, 逻辑型, 公开, 获取登录二维码
+.参数 bin, 字节集, 参考 可空, 返回图片
+.参数 error, 文本型, 参考 可空, 返回错误信息
+.参数 nickname, 文本型, 参考 可空, 返回登录昵称
+.局部变量 resp, 文本型
+.局部变量 img_url, 文本型
+
+http.Open (“GET”, “http://oa.douwangkeji.com/auth/wechat”)
+http.Send ()
+.判断开始 (http.GetStatus () ＝ 302)
+    http.Open (“GET”, http.GetResponseLocation ())
+    http.Send ()
+    resp ＝ http.GetResponseTextA ()
+    .if (InStr (resp, “退出”, , 假) ≠ -1)
+        nickname ＝ 文本_取出中间文本 (resp, #名称前缀, “<spa”)
+
+        error ＝ “已经登录”
+        return (假)
+    .如果真结束
+
+    img_url ＝ 文本_取出中间文本 (resp, “qrcode lightBorder” ＋ #引号 ＋ “ src=” ＋ #引号, #引号)
+    c_key ＝ 文本_取出中间文本 (resp, “key : ” ＋ #引号, #引号)
+    c_appid ＝ 文本_取出中间文本 (resp, “appid : ” ＋ #引号, #引号)
+    c_redirect_uri ＝ 文本_取出中间文本 (resp, “redirect_uri : ” ＋ #引号, #引号)
+    c_state ＝ 文本_取出中间文本 (resp, “state : ” ＋ #引号, #引号)
+
+    调试输出 (“img_url”, img_url)
+    调试输出 (“params”, c_key, c_appid, c_redirect_uri, c_state)
+
+    .if (img_url ＝ “”)
+        error ＝ “获取登录验证码失败”
+        return (假)
+    .如果真结束
+
+    http.Open (“GET”, “https:” ＋ img_url)
+    http.Send ()
+    .if (http.GetStatus () ＝ 200)
+        bin ＝ http.GetResponseBody ()
+        return (真)
+    .如果真结束
+
+.默认
+
+.判断结束
+
+error ＝ “未知错误”
+return (假)
+
+.子程序 detection_login, 文本型, 公开, 检测扫码状态
+.局部变量 resp, 文本型
+
+
+http.Open (“GET”, “https://open.work.weixin.qq.com/wwopen/sso/l/qrConnect?callback=jsonpCallback&key=” ＋ c_key ＋ “&redirect_uri=” ＋ 编码_URL编码 (c_redirect_uri, 真, 真) ＋ “&appid=” ＋ c_appid ＋ “&_=” ＋ 时间_取现行时间戳 (真))
+http.Send ()
+resp ＝ 文本_取出中间文本 (http.GetResponseTextA (), “jsonpCallback(”, “)”)
+return (resp)
+' QRCODE_SCAN_NEVER 等待扫码
+' QRCODE_SCAN_FAIL 取消操作
+' QRCODE_SCAN_ING 已扫码,等待确认
+' QRCODE_SCAN_SUCC 已确认 登录
+' QRCODE_SCAN_ERR 登录失败或者过期
+
+
+.子程序 set_login, 文本型, 公开
+.参数 auth_code, 文本型, 可空
+.参数 nickname, 文本型, 参考 可空
+.参数 resp, 文本型, 参考 可空
+
+http.Open (“GET”, “http://oa.douwangkeji.com/auth/wechat/callback?code=” ＋ auth_code ＋ “&state=” ＋ c_state ＋ “&appid=” ＋ c_appid)
+http.Send ()
+
+
+.判断开始 (http.GetStatus () ＝ 302)
+    http.Open (“GET”, http.GetResponseLocation ())
+    http.Send ()
+    resp ＝ http.GetResponseTextA ()
+    nickname ＝ 文本_取出中间文本 (resp, #名称前缀, “<spa”)
+    .判断开始 (InStr (resp, “退出”, , 假) ≠ -1)
+        return (“登录成功”)
+    .默认
+        return (resp)
+    .判断结束
+
+.默认
+    resp ＝ http.GetResponseTextA ()
+.判断结束
+
+return (“登录跳转失败:” ＋ resp)
+
+
+.子程序 monitor, 文本型, 公开
+
+
+
+return (“”)
+
