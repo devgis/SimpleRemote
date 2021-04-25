@@ -20,10 +20,11 @@ namespace SimpleRemote
         private const string URL = "http://ceshi.vaiwan.com/api/get-servers/";
         private const string CheckLoginedURL = "http://oa.douwangkeji.com/auth/wechat";
 
-        static HttpMessageHandler handler = new HttpClientHandler() { UseCookies = true };
+        static CookieContainer cookieContainer = new CookieContainer();
+        static HttpMessageHandler handler = new HttpClientHandler() { CookieContainer= cookieContainer, UseCookies = true };
         static readonly HttpClient client = new HttpClient(handler);
         private static Dictionary<string, DbItemRemoteLink> DbItemRemoteLinkDIC = new Dictionary<string, DbItemRemoteLink>();
-        public static string CookieString { get; set; }
+        static CookieCollection cookies { get; set; }
 
         static RequestDAL()
         {
@@ -36,6 +37,17 @@ namespace SimpleRemote
             // Call asynchronous network methods in a try/catch block to handle exceptions.
             try
             {
+                // Add Cookie
+                try
+                {
+                    if (cookies != null && cookies.Count > 0)
+                    {
+                        cookieContainer.Add(cookies);
+                    }
+                }
+                catch
+                { }
+
                 partRemoteTree.Items.Clear();
                 HttpResponseMessage response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
@@ -143,6 +155,12 @@ namespace SimpleRemote
                             loginForm.Dispatcher.Invoke(()=> {
                                 loginForm.Hide();
                             });
+
+                            cookies = cookieContainer.GetCookies(new Uri(CheckLoginedURL));
+                            //FileStream fileStream = new FileStream("SimoleRemoteSavedCookie.dat", System.IO.FileMode.Create);
+                            //BinaryFormatter b = new BinaryFormatter();
+                            //b.Serialize(fileStream, cookies);
+                            //fileStream.Close();
 
                             //打开主窗体
                             Application.Current.Dispatcher.Invoke(() =>
