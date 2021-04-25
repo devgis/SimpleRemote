@@ -315,6 +315,9 @@
     <Compile Include="Container\RemoteControl_telnet.xaml.cs">
       <DependentUpon>RemoteControl_telnet.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modes\DataStoreLocation.cs" />
     <Compile Include="Modes\DbItemSettingPutty.cs" />
     <Compile Include="Modes\DbRemoteTree.cs" />
@@ -439,6 +442,10 @@
     <Page Include="Controls\RemoteTreeViewItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Style\HamburgerMenu.xaml">
       <Generator>MSBuild:Compile</Generator>

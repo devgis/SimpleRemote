@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dragablz="clr-namespace:SimpleRemote.Controls.Dragablz"
     xmlns:local="clr-namespace:SimpleRemote"
-    StartupUri="MainWindow.xaml">
+    StartupUri="Login.xaml">
 
     <Application.Resources>
         <ResourceDictionary>

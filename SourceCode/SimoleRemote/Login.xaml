@@ -1,0 +1,18 @@
+﻿<Window x:Class="SimpleRemote.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleRemote"
+        mc:Ignorable="d"
+        Title="登录系统" Height="450" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <WebBrowser Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Source="https://open.work.weixin.qq.com/wwopen/sso/qrConnect?appid=ww58251121245d429f&amp;agentid=1000017&amp;redirect_uri=http://oa.douwangkeji.com/auth/wechat/callback&amp;state=i8rtuMGXbrv6qGab"/>
+    </Grid>
+</Window>

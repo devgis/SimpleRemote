@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,9 +18,19 @@ namespace SimpleRemote
     public class RequestDAL
     {
         private const string URL = "http://ceshi.vaiwan.com/api/get-servers/";
-        static readonly HttpClient client = new HttpClient();
-        private static Dictionary<string, DbItemRemoteLink> DbItemRemoteLinkDIC = new Dictionary<string, DbItemRemoteLink>();
+        private const string CheckLoginedURL = "http://oa.douwangkeji.com/auth/wechat";
 
+        static HttpMessageHandler handler = new HttpClientHandler() { UseCookies = true };
+        static readonly HttpClient client = new HttpClient(handler);
+        private static Dictionary<string, DbItemRemoteLink> DbItemRemoteLinkDIC = new Dictionary<string, DbItemRemoteLink>();
+        public static string CookieString { get; set; }
+
+        static RequestDAL()
+        {
+            client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0");
+            client.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            client.DefaultRequestHeaders.Add("Keep-Alive", "timeout=600");
+        }
         public static async void GetData(TreeView partRemoteTree,string url= URL)
         {
             // Call asynchronous network methods in a try/catch block to handle exceptions.
@@ -108,6 +121,48 @@ namespace SimpleRemote
                 
                 MessageBox.Show($"获取远程数据出错!(Error:{e.Message}");
             }
+        }
+
+        public static async void CheckLogined(Login loginForm,string loginurl= CheckLoginedURL)
+        {
+            bool blogined = false;
+            ThreadPool.QueueUserWorkItem(async (o) => {
+                while (!blogined)
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(loginurl);
+                        response.EnsureSuccessStatusCode();
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        //检测是否登录成功 
+                        if (response.StatusCode == System.Net.HttpStatusCode.Found
+                        &&!string.IsNullOrEmpty(responseBody)
+                        && responseBody.Contains("退出"))
+                        {
+                            blogined = true;
+                            loginForm.Dispatcher.Invoke(()=> {
+                                loginForm.Hide();
+                            });
+
+                            //打开主窗体
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                MainWindow main = new MainWindow();
+                                main.Show();
+                            });
+                        }
+
+                        //登录成功后进入主窗体;
+
+                    }
+                    catch (Exception e)
+                    {
+                        //MessageBox.Show($"获取远程登录信息出错!(Error:{e.Message}");
+                    }
+                }
+            },null);
+            Thread.Sleep(10000);
+            
         }
 
         public static DbItemRemoteLink GetItemRemoteLink(string uuid)
