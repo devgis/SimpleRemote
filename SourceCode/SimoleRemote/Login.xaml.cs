@@ -19,6 +19,7 @@ namespace SimpleRemote
     /// </summary>
     public partial class Login : Window
     {
+        string url = "https://open.work.weixin.qq.com/wwopen/sso/qrConnect?appid=ww58251121245d429f&agentid=1000017&redirect_uri=http://oa.douwangkeji.com/auth/wechat/callback&state=hjGPSpqxghHYVVzR";
         public Login()
         {
             InitializeComponent();
@@ -26,7 +27,15 @@ namespace SimpleRemote
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            
+            RequestDAL.SetQRCode(qrCodeImage, url);
+
             RequestDAL.CheckLogined(this);
+        }
+
+        private void btRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            RequestDAL.SetQRCode(qrCodeImage, url);
         }
     }
 }

@@ -4,10 +4,13 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using LiteDB;
 using Newtonsoft.Json;
 using SimpleRemote.Controls;
@@ -148,11 +151,12 @@ namespace SimpleRemote
                         string responseBody = await response.Content.ReadAsStringAsync();
                         //检测是否登录成功 
                         if (response.StatusCode == System.Net.HttpStatusCode.Found
-                        &&!string.IsNullOrEmpty(responseBody)
+                        && !string.IsNullOrEmpty(responseBody)
                         && responseBody.Contains("退出"))
                         {
                             blogined = true;
-                            loginForm.Dispatcher.Invoke(()=> {
+                            loginForm.Dispatcher.Invoke(() =>
+                            {
                                 loginForm.Hide();
                             });
 
@@ -179,8 +183,57 @@ namespace SimpleRemote
                     }
                 }
             },null);
-            Thread.Sleep(10000);
+            Thread.Sleep(1000);
             
+        }
+
+        public static async void SetQRCode(Image image, string url)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                if (!string.IsNullOrEmpty(responseBody)
+                    && responseBody.Contains("微信登录")
+                    && responseBody.Contains("qrcode lightBorder"))
+                {
+                    string qrurl ="http:"+GetWebImageURL(responseBody);
+                    image.Dispatcher.Invoke(() => {
+                        image.Source = new BitmapImage(new Uri(qrurl, UriKind.Absolute));
+                        image.UpdateLayout();
+                    });
+                    
+                }
+                else
+                {
+                    MessageBox.Show("获取图片失败！");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"获取登录二维码出错!(Error:{e.Message}");
+            }
+
+        }
+
+        private static string GetWebImageURL(string html)
+        {
+            Regex regImg = new Regex(@"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", RegexOptions.IgnoreCase);
+            
+            // 搜索匹配的字符串   
+            MatchCollection matches = regImg.Matches(html);
+
+            // 取得匹配项列表   
+            foreach (Match match in matches)
+            {
+                if (match.Value.Contains("qrcode lightBorder"))
+                {
+                    return match.Groups["imgUrl"].Value;
+                }
+            }
+            return "";
         }
 
         public static DbItemRemoteLink GetItemRemoteLink(string uuid)
