@@ -210,9 +210,10 @@ namespace SimpleRemote
                             }
                             //登录成功后进入主窗体;
 
-                            Application.Current.Dispatcher.Invoke(() =>
+                            tblock.Dispatcher.Invoke(() =>
                             {
                                 tblock.Text = message;
+                                tblock.UpdateLayout();
                             });
 
                         }
