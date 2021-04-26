@@ -30,7 +30,7 @@ namespace SimpleRemote
             
             RequestDAL.SetQRCode(qrCodeImage, url);
 
-            RequestDAL.CheckLogined(this);
+            RequestDAL.CheckLogined(this,tbStates);
         }
 
         private void btRefresh_Click(object sender, RoutedEventArgs e)

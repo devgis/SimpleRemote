@@ -140,7 +140,7 @@ namespace SimpleRemote
             }
         }
 
-        public static async void CheckLogined(Login loginForm)
+        public static async void CheckLogined(Login loginForm,TextBlock tblock)
         {
             bool blogined = false;
             
@@ -180,9 +180,43 @@ namespace SimpleRemote
                                 });
                             }
 
+                            string message = "请扫码登录";
+                            if (!string.IsNullOrEmpty(responseBody))
+                            {
+                                if (responseBody.ToUpper().Contains("QRCODE_SCAN_ING"))
+                                {
+                                    message = "扫码中...";
+                                }
+                                else if (responseBody.ToUpper().Contains("QRCODE_SCAN_NEVER"))
+                                {
+                                    message = "等待扫码";
+                                }
+                                else if (responseBody.ToUpper().Contains("QRCODE_SCAN_FAIL"))
+                                {
+                                    message = "取消操作";
+                                }
+                                else if (responseBody.ToUpper().Contains("QRCODE_SCAN_ING"))
+                                {
+                                    message = "已扫码,等待确认";
+                                }
+                                else if (responseBody.ToUpper().Contains("QRCODE_SCAN_SUCC"))
+                                {
+                                    message = "已确认 登录";
+                                }
+                                else if (responseBody.ToUpper().Contains("QRCODE_SCAN_ERR"))
+                                {
+                                    message = "登录失败或者过期";
+                                }
+                            }
                             //登录成功后进入主窗体;
 
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                tblock.Text = message;
+                            });
+
                         }
+
                         catch (Exception e)
                         {
                             //MessageBox.Show($"获取远程登录信息出错!(Error:{e.Message}");
@@ -216,11 +250,11 @@ namespace SimpleRemote
                     {
                         if (s2.Contains(keystart))
                         {
-                            key = s2.Replace(keystart, "").TrimEnd('\"').TrimEnd(',').TrimEnd(' ');
+                            key = s2.Replace(keystart, "").Replace("\"","").Trim(',').Trim(' ');
                         }
                         else if (s2.Contains(reduristart))
                         {
-                            redirect_uri = s2.Replace(reduristart, "").TrimEnd('\"').TrimEnd(',').TrimEnd(' ');
+                            redirect_uri = s2.Replace(reduristart, "").Trim('\"').TrimEnd(',').TrimEnd(' ');
                         }
                     }
 
