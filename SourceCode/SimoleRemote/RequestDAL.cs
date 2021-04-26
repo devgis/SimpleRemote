@@ -20,13 +20,14 @@ namespace SimpleRemote
 {
     public class RequestDAL
     {
-        private const string URL = "http://ceshi.vaiwan.com/api/get-servers/";
+        private const string URL = "http://127.0.0.1:8081/api/get-servers/";
         private static string key = "";
         private static string redirect_uri = "";
+        private static string redirect_index = "http://oa.douwangkeji.com/auth/wechat/callback?code={0}&appid=ww58251121245d429f";
         private const string CheckLoginedURL = "https://open.work.weixin.qq.com/wwopen/sso/l/qrConnect?callback=jsonpCallback&key={0}&redirect_uri={1}&appid=ww58251121245d429f";
 
         static CookieContainer cookieContainer = new CookieContainer();
-        static HttpMessageHandler handler = new HttpClientHandler() { CookieContainer= cookieContainer, UseCookies = true };
+        static HttpMessageHandler handler = new HttpClientHandler() { CookieContainer = cookieContainer, UseCookies = true };
         static readonly HttpClient client = new HttpClient(handler);
         private static Dictionary<string, DbItemRemoteLink> DbItemRemoteLinkDIC = new Dictionary<string, DbItemRemoteLink>();
         static CookieCollection cookies { get; set; }
@@ -37,7 +38,7 @@ namespace SimpleRemote
             client.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
             client.DefaultRequestHeaders.Add("Keep-Alive", "timeout=600");
         }
-        public static async void GetData(TreeView partRemoteTree,string url= URL)
+        public static async void GetData(TreeView partRemoteTree, string url = URL)
         {
             // Call asynchronous network methods in a try/catch block to handle exceptions.
             try
@@ -60,12 +61,13 @@ namespace SimpleRemote
                 // Above three lines can be replaced with new helper method below
                 // string responseBody = await client.GetStringAsync(uri);
                 var rs = JsonConvert.DeserializeObject<RS>(responseBody);
-                if (rs != null && rs.code == 0&&rs.data.Count>0){
+                if (rs != null && rs.code == 0 && rs.data.Count > 0)
+                {
                     //访问远程数据成功！
                     List<DbRemoteTree> Items = new List<DbRemoteTree>();
                     foreach (var item in rs.data)
                     {
-                        var treeitem = new DbRemoteTree(item.id.ToString(), $"{item.server_name}-{item.remark}-{item.remarks}", RemoteType.rdp,item.online_status);
+                        var treeitem = new DbRemoteTree(item.id.ToString(), $"{item.server_name}-{item.remark}-{item.remarks}", RemoteType.rdp, item.online_status);
                         switch (item.protocol)
                         {
                             case "ssh":
@@ -89,7 +91,7 @@ namespace SimpleRemote
                         link.Password = item.password;
                         link.UserName = item.name;
                         link.Description = item.remark;
-                        link.ExternalIsMaximize =true;
+                        link.ExternalIsMaximize = true;
                         link.ExternalWindowHeight = 600;
                         link.ExternalWindowWidth = 800;
                         link.Id = item.id.ToString();
@@ -118,7 +120,7 @@ namespace SimpleRemote
                         }
 
                     }
-                   
+
                     //Items.Add(new DbRemoteTree("001", "cerdp", RemoteType.rdp));
                     //Items.Add(new DbRemoteTree("002", "cessh", RemoteType.ssh));
                     //Items.Add(new DbRemoteTree("003", "cetelnet", RemoteType.telnet));
@@ -128,22 +130,23 @@ namespace SimpleRemote
                         partRemoteTree.Items.Add(treeItem);
                     }
                 }
-                else{
+                else
+                {
                     MessageBox.Show(responseBody);
                     throw new Exception($"获取远程配置(服务Url:{url})数据出错,！");
                 }
             }
             catch (Exception e)
             {
-                
+
                 MessageBox.Show($"获取远程数据出错!(Error:{e.Message}");
             }
         }
 
-        public static async void CheckLogined(Login loginForm,TextBlock tblock)
+        public static async void CheckLogined(Login loginForm, TextBlock tblock)
         {
             bool blogined = false;
-            
+
             ThreadPool.QueueUserWorkItem(async (o) => {
                 while (!blogined)
                 {
@@ -156,17 +159,23 @@ namespace SimpleRemote
                             response.EnsureSuccessStatusCode();
                             string responseBody = await response.Content.ReadAsStringAsync();
                             //检测是否登录成功 
-                            if (response.StatusCode == System.Net.HttpStatusCode.Found
+                            if (response.StatusCode == System.Net.HttpStatusCode.OK
                             && !string.IsNullOrEmpty(responseBody)
-                            && responseBody.Contains("退出"))
+                            && responseBody.ToUpper().Contains("QRCODE_SCAN_SUCC"))
                             {
+                                var wxrs = JsonConvert.DeserializeObject<WXRS>(responseBody.Replace("jsonpCallback(", "").TrimEnd(')'));
+                                string acturl = string.Format(redirect_index, wxrs.auth_code);
+                                await client.GetAsync(acturl);
+
                                 blogined = true;
                                 loginForm.Dispatcher.Invoke(() =>
                                 {
                                     loginForm.Hide();
                                 });
 
-                                cookies = cookieContainer.GetCookies(new Uri(CheckLoginedURL));
+                                cookies = cookieContainer.GetCookies(new Uri(loginurl));
+
+                                string s = JsonConvert.SerializeObject(cookies);
                                 //FileStream fileStream = new FileStream("SimoleRemoteSavedCookie.dat", System.IO.FileMode.Create);
                                 //BinaryFormatter b = new BinaryFormatter();
                                 //b.Serialize(fileStream, cookies);
@@ -176,6 +185,7 @@ namespace SimpleRemote
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     MainWindow main = new MainWindow();
+                                    Application.Current.MainWindow = main;
                                     main.Show();
                                 });
                             }
@@ -183,11 +193,8 @@ namespace SimpleRemote
                             string message = "请扫码登录";
                             if (!string.IsNullOrEmpty(responseBody))
                             {
-                                if (responseBody.ToUpper().Contains("QRCODE_SCAN_ING"))
-                                {
-                                    message = "扫码中...";
-                                }
-                                else if (responseBody.ToUpper().Contains("QRCODE_SCAN_NEVER"))
+
+                                if (responseBody.ToUpper().Contains("QRCODE_SCAN_NEVER"))
                                 {
                                     message = "等待扫码";
                                 }
@@ -197,7 +204,7 @@ namespace SimpleRemote
                                 }
                                 else if (responseBody.ToUpper().Contains("QRCODE_SCAN_ING"))
                                 {
-                                    message = "已扫码,等待确认";
+                                    message = "扫码中...";
                                 }
                                 else if (responseBody.ToUpper().Contains("QRCODE_SCAN_SUCC"))
                                 {
@@ -224,9 +231,9 @@ namespace SimpleRemote
                         }
                     }
                 }
-            },null);
+            }, null);
             Thread.Sleep(1000);
-            
+
         }
 
         public static async void SetQRCode(Image image, string url)
@@ -241,7 +248,7 @@ namespace SimpleRemote
                     && responseBody.Contains("微信登录")
                     && responseBody.Contains("qrcode lightBorder"))
                 {
-                    string qrurl ="http:"+GetWebImageURL(responseBody);
+                    string qrurl = "http:" + GetWebImageURL(responseBody);
 
                     StringReader sr = new System.IO.StringReader(responseBody);
                     string s2 = string.Empty;
@@ -251,7 +258,7 @@ namespace SimpleRemote
                     {
                         if (s2.Contains(keystart))
                         {
-                            key = s2.Replace(keystart, "").Replace("\"","").Trim(',').Trim(' ');
+                            key = s2.Replace(keystart, "").Replace("\"", "").Trim(',').Trim(' ');
                         }
                         else if (s2.Contains(reduristart))
                         {
@@ -260,11 +267,11 @@ namespace SimpleRemote
                     }
 
 
-                        image.Dispatcher.Invoke(() => {
+                    image.Dispatcher.Invoke(() => {
                         image.Source = new BitmapImage(new Uri(qrurl, UriKind.Absolute));
                         image.UpdateLayout();
                     });
-                    
+
                 }
                 else
                 {
@@ -281,7 +288,7 @@ namespace SimpleRemote
         private static string GetWebImageURL(string html)
         {
             Regex regImg = new Regex(@"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", RegexOptions.IgnoreCase);
-            
+
             // 搜索匹配的字符串   
             MatchCollection matches = regImg.Matches(html);
 
@@ -388,7 +395,7 @@ namespace SimpleRemote
         //	"id": "211820",
         //	"login_url": "vpsadm2.asp?id=211820&go=a"
         //},
-        public Dictionary<string,string> parameters
+        public Dictionary<string, string> parameters
         {
             get;
             set;
@@ -446,6 +453,21 @@ namespace SimpleRemote
             get;
             set;
         }
-        
+
+    }
+
+    public class WXRS
+    {
+        public string status
+        {
+            get;
+            set;
+        }
+
+        public string auth_code
+        {
+            get;
+            set;
+        }
     }
 }
