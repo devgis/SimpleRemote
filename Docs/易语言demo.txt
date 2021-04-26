@@ -57,6 +57,8 @@ return (假)
 .局部变量 resp, 文本型
 
 
+https://open.work.weixin.qq.com/wwopen/sso/l/qrConnect?callback=jsonpCallback&key=” ＋ c_key ＋ “&redirect_uri=” ＋ 编码_URL编码 (c_redirect_uri, 真, 真) ＋ “&appid=” ＋ c_appid 
+
 http.Open (“GET”, “https://open.work.weixin.qq.com/wwopen/sso/l/qrConnect?callback=jsonpCallback&key=” ＋ c_key ＋ “&redirect_uri=” ＋ 编码_URL编码 (c_redirect_uri, 真, 真) ＋ “&appid=” ＋ c_appid ＋ “&_=” ＋ 时间_取现行时间戳 (真))
 http.Send ()
 resp ＝ 文本_取出中间文本 (http.GetResponseTextA (), “jsonpCallback(”, “)”)

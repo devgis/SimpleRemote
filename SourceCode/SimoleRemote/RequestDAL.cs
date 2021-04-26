@@ -21,7 +21,9 @@ namespace SimpleRemote
     public class RequestDAL
     {
         private const string URL = "http://ceshi.vaiwan.com/api/get-servers/";
-        private const string CheckLoginedURL = "http://oa.douwangkeji.com/auth/wechat";
+        private static string key = "";
+        private static string redirect_uri = "";
+        private const string CheckLoginedURL = "https://open.work.weixin.qq.com/wwopen/sso/l/qrConnect?callback=jsonpCallback&key={0}&redirect_uri={1}&appid=ww58251121245d429f";
 
         static CookieContainer cookieContainer = new CookieContainer();
         static HttpMessageHandler handler = new HttpClientHandler() { CookieContainer= cookieContainer, UseCookies = true };
@@ -138,48 +140,53 @@ namespace SimpleRemote
             }
         }
 
-        public static async void CheckLogined(Login loginForm,string loginurl= CheckLoginedURL)
+        public static async void CheckLogined(Login loginForm)
         {
             bool blogined = false;
+            
             ThreadPool.QueueUserWorkItem(async (o) => {
                 while (!blogined)
                 {
-                    try
+                    if (!string.IsNullOrEmpty(key))
                     {
-                        HttpResponseMessage response = await client.GetAsync(loginurl);
-                        response.EnsureSuccessStatusCode();
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        //检测是否登录成功 
-                        if (response.StatusCode == System.Net.HttpStatusCode.Found
-                        && !string.IsNullOrEmpty(responseBody)
-                        && responseBody.Contains("退出"))
+                        try
                         {
-                            blogined = true;
-                            loginForm.Dispatcher.Invoke(() =>
+                            string loginurl = string.Format(CheckLoginedURL, key, redirect_uri);
+                            HttpResponseMessage response = await client.GetAsync(loginurl);
+                            response.EnsureSuccessStatusCode();
+                            string responseBody = await response.Content.ReadAsStringAsync();
+                            //检测是否登录成功 
+                            if (response.StatusCode == System.Net.HttpStatusCode.Found
+                            && !string.IsNullOrEmpty(responseBody)
+                            && responseBody.Contains("退出"))
                             {
-                                loginForm.Hide();
-                            });
+                                blogined = true;
+                                loginForm.Dispatcher.Invoke(() =>
+                                {
+                                    loginForm.Hide();
+                                });
 
-                            cookies = cookieContainer.GetCookies(new Uri(CheckLoginedURL));
-                            //FileStream fileStream = new FileStream("SimoleRemoteSavedCookie.dat", System.IO.FileMode.Create);
-                            //BinaryFormatter b = new BinaryFormatter();
-                            //b.Serialize(fileStream, cookies);
-                            //fileStream.Close();
+                                cookies = cookieContainer.GetCookies(new Uri(CheckLoginedURL));
+                                //FileStream fileStream = new FileStream("SimoleRemoteSavedCookie.dat", System.IO.FileMode.Create);
+                                //BinaryFormatter b = new BinaryFormatter();
+                                //b.Serialize(fileStream, cookies);
+                                //fileStream.Close();
 
-                            //打开主窗体
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                MainWindow main = new MainWindow();
-                                main.Show();
-                            });
+                                //打开主窗体
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    MainWindow main = new MainWindow();
+                                    main.Show();
+                                });
+                            }
+
+                            //登录成功后进入主窗体;
+
                         }
-
-                        //登录成功后进入主窗体;
-
-                    }
-                    catch (Exception e)
-                    {
-                        //MessageBox.Show($"获取远程登录信息出错!(Error:{e.Message}");
+                        catch (Exception e)
+                        {
+                            //MessageBox.Show($"获取远程登录信息出错!(Error:{e.Message}");
+                        }
                     }
                 }
             },null);
@@ -200,7 +207,25 @@ namespace SimpleRemote
                     && responseBody.Contains("qrcode lightBorder"))
                 {
                     string qrurl ="http:"+GetWebImageURL(responseBody);
-                    image.Dispatcher.Invoke(() => {
+
+                    StringReader sr = new System.IO.StringReader(responseBody);
+                    string s2 = string.Empty;
+                    string keystart = "key : ";
+                    string reduristart = "redirect_uri : ";
+                    while ((s2 = sr.ReadLine()) != null)
+                    {
+                        if (s2.Contains(keystart))
+                        {
+                            key = s2.Replace(keystart, "").TrimEnd('\"').TrimEnd(',').TrimEnd(' ');
+                        }
+                        else if (s2.Contains(reduristart))
+                        {
+                            redirect_uri = s2.Replace(reduristart, "").TrimEnd('\"').TrimEnd(',').TrimEnd(' ');
+                        }
+                    }
+
+
+                        image.Dispatcher.Invoke(() => {
                         image.Source = new BitmapImage(new Uri(qrurl, UriKind.Absolute));
                         image.UpdateLayout();
                     });

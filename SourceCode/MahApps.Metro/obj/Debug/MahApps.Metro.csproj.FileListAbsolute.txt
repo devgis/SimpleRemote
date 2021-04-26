@@ -143,7 +143,6 @@ C:\Work\GitHub\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.pdb
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\bin\Debug\MahApps.Metro.dll
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\bin\Debug\MahApps.Metro.pdb
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\bin\Debug\System.Windows.Interactivity.dll
-D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csprojAssemblyReference.cache
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\Controls\RevealImage.baml
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\Styles\Accents\Amber.baml
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\Styles\Accents\BaseDark.baml
