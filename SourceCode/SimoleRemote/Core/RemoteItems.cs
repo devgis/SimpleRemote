@@ -256,31 +256,33 @@ namespace SimpleRemote.Core
         /// <summary>
         /// 筛选远程条目
         /// </summary>
-        public static void Screening(string text)
+        public static void Screening(string text,TreeView PART_RemoteTree)
         {
-            if (string.IsNullOrEmpty(text) )
+            if (!string.IsNullOrEmpty(text) )
             {
-                if(_remoteTreeView!=null)
+                if(PART_RemoteTree != null)
                 {
-                    _remoteTreeView.Items.Clear();
+                    PART_RemoteTree.Items.Clear();
                     //LoadItems(_remoteTreeView.Items, _remoteTree);
 
                     foreach (var item in RequestDAL.Items.Where(p=>p.Name.Contains(text)))
                     {
                         RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
-                        _remoteTreeView.Items.Add(treeItem);
+                        PART_RemoteTree.Items.Add(treeItem);
                     }
+                    PART_RemoteTree.UpdateLayout();
                 }
             }
             else
             {
                 //Load all
-                _remoteTreeView.Items.Clear();
+                PART_RemoteTree.Items.Clear();
                 foreach (var item in RequestDAL.Items)
                 {
                     RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
-                    _remoteTreeView.Items.Add(treeItem);
+                    PART_RemoteTree.Items.Add(treeItem);
                 }
+                PART_RemoteTree.UpdateLayout();
             }
 
         }

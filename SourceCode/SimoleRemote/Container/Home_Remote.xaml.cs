@@ -369,12 +369,12 @@ namespace SimpleRemote.Container
 
         private void SelectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            RemoteItems.Screening(Text_Screen.Text);
+            RemoteItems.Screening(Text_Screen.Text, PART_RemoteTree);
         }
 
         private void Text_Screen_TextChanged(object sender, TextChangedEventArgs e)
         {
-            RemoteItems.Screening(Text_Screen.Text);
+            RemoteItems.Screening(Text_Screen.Text, PART_RemoteTree);
         }
 
         private void MenuItem_Refresh_Click(object sender, RoutedEventArgs e)

@@ -56,6 +56,7 @@ namespace SimpleRemote
                 { }
 
                 partRemoteTree.Items.Clear();
+                DbItemRemoteLinkDIC.Clear();
                 HttpResponseMessage response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();

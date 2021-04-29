@@ -28,16 +28,16 @@
                 <RichTextBox IsDocumentEnabled="True" SpellCheck.IsEnabled="True" FontSize="16" IsReadOnly="True" Block.LineHeight="30" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Grid.Row="3" HorizontalAlignment="Center" Width="300" Margin="106,0">
                     <FlowDocument>
                         <Paragraph>
-                            <Run Text="作 者： Beck"/>
+                            <Run Text="作 者： 公司内部专用"/>
                             <LineBreak/>
                             <Run Text="主 页："/>
-                            <Hyperlink NavigateUri="http://www.91fk.net" TextDecorations="{x:Null}" Click="Hyperlink_Click" >
-                                <Run Text="http://www.91fk.net" Cursor="Hand"/>
+                            <Hyperlink NavigateUri="http://eoms.oa.douwangkeji.com/" TextDecorations="{x:Null}" Click="Hyperlink_Click" >
+                                <Run Text="eoms" Cursor="Hand"/>
                             </Hyperlink>
                             <LineBreak />
                             <Run Text="邮 箱："/>
                             <Hyperlink TextDecorations="{x:Null}" >
-                                <Run Text="simoleremote@91fk.net" Cursor="Hand"/>
+                                <Run Text="ldlres@qq.com" Cursor="Hand"/>
                             </Hyperlink>
                             <LineBreak />
                             <Run x:Name="RichRun_Var"/>
