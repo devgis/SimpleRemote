@@ -219,7 +219,7 @@ namespace SimpleRemote.Container
                             var item = (RemoteTreeViewItem)PART_RemoteTree.SelectedItem;
                             //liyafei changed 
                             //RemoteItems.Open((RemoteTreeViewItem)PART_RemoteTree.SelectedItem, DbItemSetting.OPEN_DEFAULT);
-                            RequestDAL.GetDetailAndOpen(item.uuid);
+                            RequestDAL.GetDetailAndOpen(item.uuid, Panel_Animation);
                         }
                         catch (Exception ex)
                         {
@@ -262,7 +262,7 @@ namespace SimpleRemote.Container
                             var item = (RemoteTreeViewItem)PART_RemoteTree.SelectedItem;
                             //liyafei changed 
                             //RemoteItems.Open((RemoteTreeViewItem)PART_RemoteTree.SelectedItem, DbItemSetting.OPEN_DEFAULT);
-                            RequestDAL.GetDetailAndOpen(item.uuid);
+                            RequestDAL.GetDetailAndOpen(item.uuid, Panel_Animation);
                         }
                         catch(Exception ex)
                         {

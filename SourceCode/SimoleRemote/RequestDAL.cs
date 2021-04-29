@@ -146,7 +146,7 @@ namespace SimpleRemote
             }
         }
 
-        public static async void GetDetailAndOpen(string uuid, string url = URL)
+        public static async void GetDetailAndOpen(string uuid, StackPanel loadingPanel, string url = URL)
         {
             // Call asynchronous network methods in a try/catch block to handle exceptions.
             try
@@ -161,6 +161,7 @@ namespace SimpleRemote
                 }
                 catch
                 { }
+
                 string hostname = string.Empty;
 
                 if (!string.IsNullOrEmpty(uuid) && DbItemRemoteLinkDIC.ContainsKey(uuid))
@@ -171,14 +172,14 @@ namespace SimpleRemote
                 {
                     throw new Exception("找不到服務器");
                 }
-
+                loadingPanel.Visibility = Visibility.Visible;
                 HttpResponseMessage response = await client.GetAsync($"{url}{hostname}/");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 // Above three lines can be replaced with new helper method below
                 // string responseBody = await client.GetStringAsync(uri);
                 var rs = JsonConvert.DeserializeObject<RSDetail>(responseBody);
-                if (rs != null && rs.code == 0 && rs.data!=null)
+                if (rs != null && rs.code == 0 && rs.data != null)
                 {
                     //访问远程数据成功！
 
@@ -221,18 +222,23 @@ namespace SimpleRemote
                     {
                         RemoteItems.Open(link, DbItemSetting.OPEN_DEFAULT);
                     });
-                    
+                    loadingPanel.Visibility = Visibility.Collapsed;
+
                 }
                 else
                 {
-                    MessageBox.Show(responseBody);
+                    loadingPanel.Visibility = Visibility.Collapsed;
                     throw new Exception($"获取远程配置(服务Url:{url})数据出错,！");
                 }
             }
             catch (Exception e)
             {
-
+                loadingPanel.Visibility = Visibility.Collapsed;
                 MessageBox.Show($"获取远程数据出错!(Error:{e.Message}");
+            }
+            finally
+            {
+                loadingPanel.Visibility = Visibility.Collapsed;
             }
         }
 
