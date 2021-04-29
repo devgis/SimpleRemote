@@ -324,7 +324,7 @@
                     IsExpanded="{Binding Path=IsExpander2, Mode=TwoWay}" />
             </Grid>
         </ScrollViewer>
-        <StackPanel x:Name="Panel_Animation" Margin="0,200" VerticalAlignment="Center" Visibility="Collapsed">
+        <StackPanel x:Name="Panel_Animation" Margin="0,0,0,0" VerticalAlignment="Center" Visibility="Collapsed">
             <TextBlock TextWrapping="Wrap" Text="正在连接，请稍后" FontSize="18" Height="30" HorizontalAlignment="Center"/>
             <mah:MetroProgressBar IsIndeterminate="True"/>
         </StackPanel>

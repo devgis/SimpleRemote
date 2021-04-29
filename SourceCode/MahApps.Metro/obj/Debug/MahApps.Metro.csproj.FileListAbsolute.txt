@@ -282,4 +282,3 @@ D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csproj.C
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csproj.CopyComplete
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.dll
 D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.pdb
-D:\Github\SimpleRemote\SourceCode\MahApps.Metro\obj\Debug\MahApps.Metro.csprojAssemblyReference.cache
