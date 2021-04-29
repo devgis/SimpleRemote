@@ -31,6 +31,7 @@ namespace SimpleRemote
         static readonly HttpClient client = new HttpClient(handler);
         private static Dictionary<string, DbItemRemoteLink> DbItemRemoteLinkDIC = new Dictionary<string, DbItemRemoteLink>();
         static CookieCollection cookies { get; set; }
+        public static List<DbRemoteTree> Items = null;
 
         static RequestDAL()
         {
@@ -64,7 +65,7 @@ namespace SimpleRemote
                 if (rs != null && rs.code == 0 && rs.data.Count > 0)
                 {
                     //访问远程数据成功！
-                    List<DbRemoteTree> Items = new List<DbRemoteTree>();
+                    Items = new List<DbRemoteTree>();
                     foreach (var item in rs.data)
                     {
                         var treeitem = new DbRemoteTree(item.id.ToString(), $"{item.server_name}-{item.remark}-{item.remarks}", RemoteType.rdp, item.online_status);

@@ -369,7 +369,7 @@ namespace SimpleRemote.Container
 
         private void SelectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //RemoteItems.Screening(Text_Screen.Text);
+            RemoteItems.Screening(Text_Screen.Text);
         }
 
         private void Text_Screen_TextChanged(object sender, TextChangedEventArgs e)

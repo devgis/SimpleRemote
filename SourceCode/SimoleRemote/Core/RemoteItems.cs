@@ -1,6 +1,7 @@
 ﻿using SimpleRemote.Container;
 using SimpleRemote.Controls;
 using SimpleRemote.Modes;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
@@ -257,34 +258,31 @@ namespace SimpleRemote.Core
         /// </summary>
         public static void Screening(string text)
         {
-            if (string.IsNullOrEmpty(text) && _isSelection)
+            if (string.IsNullOrEmpty(text) )
             {
                 if(_remoteTreeView!=null)
                 {
                     _remoteTreeView.Items.Clear();
-                    LoadItems(_remoteTreeView.Items, _remoteTree);
-                    _isSelection = false;
-                }
-               
-            }
-            else
-            {
-                if (!_isSelection)
-                {
-                    _isSelection = true;
-                    UpdateExpandTreeItem();
-                }
-                if (_remoteTree != null) {
-                    var list = _remoteTree.Screening(text);
-                    _remoteTreeView.Items.Clear();
-                    foreach (var item in list)
+                    //LoadItems(_remoteTreeView.Items, _remoteTree);
+
+                    foreach (var item in RequestDAL.Items.Where(p=>p.Name.Contains(text)))
                     {
                         RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
                         _remoteTreeView.Items.Add(treeItem);
                     }
                 }
-               
             }
+            else
+            {
+                //Load all
+                _remoteTreeView.Items.Clear();
+                foreach (var item in RequestDAL.Items)
+                {
+                    RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
+                    _remoteTreeView.Items.Add(treeItem);
+                }
+            }
+
         }
 
         /// <summary>

@@ -5,18 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleRemote"
         mc:Ignorable="d"
-        Title="登录系统" Height="350" Width="500" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
+        Title="登录系统" Height="550" Width="770" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="400"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Image Name="qrCodeImage" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Source="https://open.work.weixin.qq.com/wwopen/sso/qrConnect?appid=ww58251121245d429f&amp;agentid=1000017&amp;redirect_uri=http://oa.douwangkeji.com/auth/wechat/callback&amp;state=i8rtuMGXbrv6qGab"/>
