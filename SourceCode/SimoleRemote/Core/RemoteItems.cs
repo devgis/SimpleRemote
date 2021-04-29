@@ -96,10 +96,19 @@ namespace SimpleRemote.Core
 
         private static RemoteTreeViewItem GetParentItem(RemoteTreeViewItem item, out DbRemoteTree parentTree, out ItemCollection items)
         {
-            RemoteTreeViewItem parentItem = item.Parent is RemoteTreeViewItem ? (RemoteTreeViewItem)item.Parent : null;
-            parentTree = parentItem == null ? _remoteTree : parentItem.RemoteTree;
-            items = parentItem == null ? _remoteTreeView.Items : parentItem.Items;
-            return parentItem;
+            parentTree = null;
+            items = null;
+            try {
+                RemoteTreeViewItem parentItem = item.Parent is RemoteTreeViewItem ? (RemoteTreeViewItem)item.Parent : null;
+                parentTree = parentItem == null ? _remoteTree : parentItem.RemoteTree;
+                items = parentItem == null ? _remoteTreeView.Items : parentItem.Items;
+                return parentItem;
+            }
+            catch
+            {
+                return null;
+            }
+            
         }
 
         /// <summary>
@@ -250,9 +259,13 @@ namespace SimpleRemote.Core
         {
             if (string.IsNullOrEmpty(text) && _isSelection)
             {
-                _remoteTreeView.Items.Clear();
-                LoadItems(_remoteTreeView.Items, _remoteTree);
-                _isSelection = false;
+                if(_remoteTreeView!=null)
+                {
+                    _remoteTreeView.Items.Clear();
+                    LoadItems(_remoteTreeView.Items, _remoteTree);
+                    _isSelection = false;
+                }
+               
             }
             else
             {
@@ -261,14 +274,16 @@ namespace SimpleRemote.Core
                     _isSelection = true;
                     UpdateExpandTreeItem();
                 }
-
-                var list = _remoteTree.Screening(text);
-                _remoteTreeView.Items.Clear();
-                foreach (var item in list)
-                {
-                    RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
-                    _remoteTreeView.Items.Add(treeItem);
+                if (_remoteTree != null) {
+                    var list = _remoteTree.Screening(text);
+                    _remoteTreeView.Items.Clear();
+                    foreach (var item in list)
+                    {
+                        RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
+                        _remoteTreeView.Items.Add(treeItem);
+                    }
                 }
+               
             }
         }
 
@@ -278,19 +293,23 @@ namespace SimpleRemote.Core
         /// <param name="items"></param>
         public static void UpdateExpandTreeItem(ItemCollection items=null)
         {
-            if (items == null)
+            if (items == null&& _remoteTreeView!=null)
             {
                 UserSettings.RemoteTreeExpand.Clear();
                 items = _remoteTreeView.Items;
             }
-            foreach (RemoteTreeViewItem item in items)
+            if(items!=null)
             {
-                if (item.Items.Count > 0)
+                foreach (RemoteTreeViewItem item in items)
                 {
-                    UpdateExpandTreeItem(item.Items);
+                    if (item.Items.Count > 0)
+                    {
+                        UpdateExpandTreeItem(item.Items);
+                    }
+                    if (item.IsExpanded) UserSettings.RemoteTreeExpand.Add(item.uuid);
                 }
-                if (item.IsExpanded) UserSettings.RemoteTreeExpand.Add(item.uuid);
             }
+            
         }
 
         /// <summary>
