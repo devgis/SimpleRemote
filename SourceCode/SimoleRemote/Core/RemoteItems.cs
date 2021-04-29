@@ -253,6 +253,41 @@ namespace SimpleRemote.Core
             }
         }
 
+        public static void Open(DbItemRemoteLink itemRemoteLink, int openMode)
+        {
+            string uuid = itemRemoteLink.Id;
+            IRemoteControl remoteControl = null;
+
+            DbItemSetting itemSetting = DatabaseServices.GetRemoteSetting(itemRemoteLink);
+            if (openMode == DbItemSetting.OPEN_DEFAULT) openMode = itemSetting.DefaultSetting.GetOpenMode();
+            if (_remoteRunTime == null)
+            {
+                _remoteRunTime = new Dictionary<string, RemoteRunTime>();
+            }
+            //如果指定的远程桌面有在后台运行,则跳转
+            if (_remoteRunTime.ContainsKey(uuid))
+            {
+                var value = _remoteRunTime[uuid];
+                if (value.OpenMode == openMode)
+                {
+                    value.RemoteControl.Jump();
+                    return;
+                }
+                value.RemoteControl.Remove();
+                _remoteRunTime.Remove(uuid);
+            }
+
+            //开始连接远程桌面
+            if (openMode == DbItemSetting.OPEN_WINDOW) remoteControl = new RemoteWinControl();
+            else remoteControl = new RemoteTabControl();
+            remoteControl.Open(itemRemoteLink, itemSetting, openMode == DbItemSetting.OPEN_TAB);
+            if (itemRemoteLink.Type ==1)
+            {
+                _remoteRunTime.Add(uuid, new RemoteRunTime(openMode, remoteControl));
+                remoteControl.OnRemove += (sender, e) => _remoteRunTime.Remove(uuid);
+            }
+        }
+
         /// <summary>
         /// 筛选远程条目
         /// </summary>

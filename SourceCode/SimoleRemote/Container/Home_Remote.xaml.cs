@@ -214,7 +214,18 @@ namespace SimpleRemote.Container
                 {
                     if (element.IsHeaderEdit == false && element.RemoteType != RemoteType.dir)
                     {
-                        RemoteItems.Open((RemoteTreeViewItem)PART_RemoteTree.SelectedItem, DbItemSetting.OPEN_DEFAULT);
+                        try
+                        {
+                            var item = (RemoteTreeViewItem)PART_RemoteTree.SelectedItem;
+                            //liyafei changed 
+                            //RemoteItems.Open((RemoteTreeViewItem)PART_RemoteTree.SelectedItem, DbItemSetting.OPEN_DEFAULT);
+                            RequestDAL.GetDetailAndOpen(item.uuid);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"鏈接出錯：{ex.Message}");
+                        }
+                        
                     }
                 }
             }
@@ -246,7 +257,17 @@ namespace SimpleRemote.Container
                     }
                     else
                     {
-                        RemoteItems.Open((RemoteTreeViewItem)PART_RemoteTree.SelectedItem, DbItemSetting.OPEN_DEFAULT);
+                        try
+                        {
+                            var item = (RemoteTreeViewItem)PART_RemoteTree.SelectedItem;
+                            //liyafei changed 
+                            //RemoteItems.Open((RemoteTreeViewItem)PART_RemoteTree.SelectedItem, DbItemSetting.OPEN_DEFAULT);
+                            RequestDAL.GetDetailAndOpen(item.uuid);
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageBox.Show($"鏈接出錯：{ex.Message}");
+                        }
                     }
                 }
             }

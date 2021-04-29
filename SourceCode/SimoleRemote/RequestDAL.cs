@@ -14,13 +14,14 @@ using System.Windows.Media.Imaging;
 using LiteDB;
 using Newtonsoft.Json;
 using SimpleRemote.Controls;
+using SimpleRemote.Core;
 using SimpleRemote.Modes;
 
 namespace SimpleRemote
 {
     public class RequestDAL
     {
-        private const string URL = "http://127.0.0.1:8081/api/get-servers/";
+        private const string URL = "http://ceshi.vaiwan.com/api/get-servers/";
         private static string key = "";
         private static string redirect_uri = "";
         private static string redirect_index = "http://oa.douwangkeji.com/auth/wechat/callback?code={0}&appid=ww58251121245d429f";
@@ -131,6 +132,96 @@ namespace SimpleRemote
                         RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
                         partRemoteTree.Items.Add(treeItem);
                     }
+                }
+                else
+                {
+                    MessageBox.Show(responseBody);
+                    throw new Exception($"获取远程配置(服务Url:{url})数据出错,！");
+                }
+            }
+            catch (Exception e)
+            {
+
+                MessageBox.Show($"获取远程数据出错!(Error:{e.Message}");
+            }
+        }
+
+        public static async void GetDetailAndOpen(string uuid, string url = URL)
+        {
+            // Call asynchronous network methods in a try/catch block to handle exceptions.
+            try
+            {
+                // Add Cookie
+                try
+                {
+                    if (cookies != null && cookies.Count > 0)
+                    {
+                        cookieContainer.Add(cookies);
+                    }
+                }
+                catch
+                { }
+                string hostname = string.Empty;
+
+                if (!string.IsNullOrEmpty(uuid) && DbItemRemoteLinkDIC.ContainsKey(uuid))
+                {
+                    hostname = DbItemRemoteLinkDIC[uuid].Name;
+                }
+                else
+                {
+                    throw new Exception("找不到服務器");
+                }
+
+                HttpResponseMessage response = await client.GetAsync($"{url}{hostname}/");
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                // Above three lines can be replaced with new helper method below
+                // string responseBody = await client.GetStringAsync(uri);
+                var rs = JsonConvert.DeserializeObject<RSDetail>(responseBody);
+                if (rs != null && rs.code == 0 && rs.data!=null)
+                {
+                    //访问远程数据成功！
+
+                    var item = rs.data;
+                    DbItemRemoteLink link = new DbItemRemoteLink();
+                    link.Name = item.server_name;
+                    link.Password = item.password;
+                    link.UserName = item.name;
+                    link.Description = item.remark;
+                    link.ExternalIsMaximize = true;
+                    link.ExternalWindowHeight = 600;
+                    link.ExternalWindowWidth = 800;
+                    link.Id = item.id.ToString();
+                    switch (item.protocol)
+                    {
+                        case "ssh":
+                            link.Type = 2; // RemoteType.ssh;
+                            link.ItemSetting = new DbItemSettingSsh();
+                            break;
+                        case "rdp":
+                            link.Type = 1; // RemoteType.rdp;
+                            link.ItemSetting = new DbItemSettingRdp();
+                            break;
+                        case "telenet":
+                        case "telnet":
+                            link.Type = 3; // RemoteType.telnet;
+                            link.ItemSetting = new DbItemSettingTelnet();
+                            break;
+                        default:
+                            link.Type = 2;// RemoteType.ssh;
+                            link.ItemSetting = new DbItemSettingSsh();
+                            break;
+                    }
+                    link.Server = item.hosts;
+                    link.PrivateKey = null;
+                    link.IsExpander1 = true;
+                    link.IsExpander2 = true;
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        RemoteItems.Open(link, DbItemSetting.OPEN_DEFAULT);
+                    });
+                    
                 }
                 else
                 {
@@ -334,6 +425,27 @@ namespace SimpleRemote
         }
 
         public List<RSData> data
+        {
+            get;
+            set;
+        }
+    }
+
+    public class RSDetail
+    {
+        public int code
+        {
+            get;
+            set;
+        }
+
+        public string message
+        {
+            get;
+            set;
+        }
+
+        public RSData data
         {
             get;
             set;
