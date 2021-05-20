@@ -29,7 +29,7 @@ namespace SimpleRemote
         {
             if (e.Args == null || e.Args.Length < 4)
             {
-                MessageBox.Show("参数不匹配，参数为: 协议 服务器 用户名 密码!(示例: SimpleRemote rdp 127.0.0.1:3390 administrator 123456)", "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("参数不匹配，参数为: 协议 服务器 用户名 密码(示例: SimpleRemote rdp 127.0.0.1:3390 administrator 123456)!", "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
             else
