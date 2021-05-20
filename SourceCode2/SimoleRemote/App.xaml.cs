@@ -16,7 +16,15 @@ namespace SimpleRemote
         public App()
         {
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException; ;
             this.Startup += App_Startup;
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = e.ExceptionObject as Exception;
+            MessageBox.Show("AppDomain发生未知异常:" + ex.Message + "\r\nStackTrace:" + ex.StackTrace, "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            Current.Shutdown();
         }
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
