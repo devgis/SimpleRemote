@@ -15,14 +15,21 @@ namespace SimpleRemote
     {
         public App()
         {
+            Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             this.Startup += App_Startup;
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("系统发生未知异常:"+e.Exception.Message+"\r\nStackTrace:"+e.Exception.StackTrace, "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            Current.Shutdown();
         }
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
             if (e.Args == null || e.Args.Length < 4)
             {
-                MessageBox.Show("参数不匹配，参数为: 协议 服务器 用户名 密码!", "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("参数不匹配，参数为: 协议 服务器 用户名 密码!(示例: SimpleRemote rdp 127.0.0.1:3390 administrator 123456)", "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
             }
             else
@@ -31,8 +38,6 @@ namespace SimpleRemote
                 string servername = e.Args[1];
                 string username = e.Args[2];
                 string password = e.Args[3];
-
-                //RemoteItems.Open(selectItem, DbItemSetting.OPEN_WINDOW);
 
                 DbItemRemoteLink link = new DbItemRemoteLink();
                 link.Name = servername;
@@ -64,7 +69,7 @@ namespace SimpleRemote
                         link.ItemSetting = new DbItemSettingSsh();
                         break;
                 }
-                Application.Current.Dispatcher.Invoke(() =>
+                Current.Dispatcher.Invoke(() =>
                 {
                     RemoteItems.Open(link, DbItemSetting.OPEN_WINDOW);
                 });
