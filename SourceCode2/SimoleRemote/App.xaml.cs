@@ -46,6 +46,11 @@ namespace SimpleRemote
                 string servername = e.Args[1];
                 string username = e.Args[2];
                 string password = e.Args[3];
+                string privatekey = null;
+                if (e.Args.Length>=5)
+                {
+                    privatekey = e.Args[4];
+                }
 
                 DbItemRemoteLink link = new DbItemRemoteLink();
                 link.Name = servername;
@@ -56,6 +61,10 @@ namespace SimpleRemote
                 link.ExternalIsMaximize = true;
                 link.ExternalWindowHeight = 600;
                 link.ExternalWindowWidth = 800;
+                if(!string.IsNullOrEmpty(privatekey))
+                {
+                    link.PrivateKey = privatekey;
+                }
                 
                 switch (protype.ToLower())
                 {

@@ -1,0 +1,2 @@
+
+putty -ssh -P 20144 -l root -pw ec3690c7e8 zjjinhua.webok.net

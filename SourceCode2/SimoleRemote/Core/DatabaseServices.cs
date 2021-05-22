@@ -306,23 +306,40 @@ namespace SimpleRemote.Core
         /// </summary>
         public static byte[] GetSshHostKey(string id)
         {
+            if (dicKeys.ContainsKey(id))
+            {
+                return dicKeys[id];
+            }
+            return null;
+            //return  new DbSshHostKeys { id = id, value = value }; ;  //liyafei 
             return _tableSshHostKeys.FindById(id)?.value;
         }
+
+        static Dictionary<string, byte[]> dicKeys = new Dictionary<string, byte[]>();
 
         /// <summary>
         /// 设置指定ssh主机在本地保存的密钥
         /// </summary>
         public static void SetSshHostKey(string id, byte[] value)
         {
-            DbSshHostKeys dbSshHostKeys = _tableSshHostKeys.FindById(id);
+            if (dicKeys.ContainsKey(id))
+            {
+                dicKeys[id] = value;
+            }
+            else
+            {
+                dicKeys.Add(id,value);
+            }
+            return;
+            DbSshHostKeys dbSshHostKeys = _tableSshHostKeys.FindById(id); 
             if (dbSshHostKeys == null)
             {
                 dbSshHostKeys = new DbSshHostKeys { id = id, value = value };
-                _tableSshHostKeys.Insert(dbSshHostKeys);
+                //_tableSshHostKeys.Insert(dbSshHostKeys);
                 return;
             }
             dbSshHostKeys.value = value;
-            _tableSshHostKeys.Update(dbSshHostKeys);
+            //_tableSshHostKeys.Update(dbSshHostKeys);
         }
 
         /// <summary>

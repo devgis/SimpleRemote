@@ -86,41 +86,39 @@ namespace SimpleRemote.Container
             int height = (int)windows.Height - 34;
             Thread thread = new Thread(() =>
             {
-                //liyafei modified
-                //Putty.Settings settings = new Putty.Settings
-                //{
-                //    fontname = lastSettingSsh.FontName,
-                //    fontsize = lastSettingSsh.FontSize,
-                //    curtype = lastSettingSsh.Cursor - 1,
-                //    linecodepage = Encoding.GetEncoding(lastSettingSsh.Character).BodyName,
-                //    backspaceisdelete = lastSettingSsh.Fallbackkeys - 1,
-                //    mouseisxterm = lastSettingSsh.MouseAction - 1,
-                //    puttycolor = new Putty.PuttyColor(lastSettingSsh.GetPuttyColor()),
-                //    rxvthomeend = lastSettingSsh.HomeAndEnd - 1,
-                //    functionkeys = lastSettingSsh.FnAndKeypad - 1,
-                //    cjkambigwide = lastSettingSsh.CJKAmbigWide.Value,
-                //    capslockcyr = lastSettingSsh.CapsLockCyr.Value,
-                //    crimplieslf = lastSettingSsh.CRImpliesLF.Value,
-                //    lfimpliescr = lastSettingSsh.LFImpliesCR.Value,
-                //};
-                Putty.Settings settings = new Putty.Settings();
+                Putty.Settings settings = new Putty.Settings
+                {
+                    fontname = lastSettingSsh.FontName,
+                    fontsize = lastSettingSsh.FontSize,
+                    curtype = lastSettingSsh.Cursor - 1,
+                    linecodepage = Encoding.GetEncoding(lastSettingSsh.Character).BodyName,
+                    backspaceisdelete = lastSettingSsh.Fallbackkeys - 1,
+                    mouseisxterm = lastSettingSsh.MouseAction - 1,
+                    puttycolor = new Putty.PuttyColor(lastSettingSsh.GetPuttyColor()),
+                    rxvthomeend = lastSettingSsh.HomeAndEnd - 1,
+                    functionkeys = lastSettingSsh.FnAndKeypad - 1,
+                    cjkambigwide = lastSettingSsh.CJKAmbigWide.Value,
+                    capslockcyr = lastSettingSsh.CapsLockCyr.Value,
+                    crimplieslf = lastSettingSsh.CRImpliesLF.Value,
+                    lfimpliescr = lastSettingSsh.LFImpliesCR.Value,
+                };
 
                 string user = string.IsNullOrEmpty(linkSettings.UserName) ? "" : $"-l {linkSettings.UserName}";
-                string pw = null;
-                if (string.IsNullOrWhiteSpace(linkSettings.PrivateKey))
-                {
-                    pw = string.IsNullOrEmpty(linkSettings.Password) ? "" : $"-pw {linkSettings.Password}";
-                }
-                else
-                {
-                    _privateKey = Path.GetTempPath() + linkSettings.Id;
-                    using (StreamWriter streamWriter = new StreamWriter(_privateKey, false, Encoding.ASCII))
-                    {
-                        streamWriter.Write(linkSettings.PrivateKey);
-                        streamWriter.Flush();
-                    }
-                    pw = $"-i \"{_privateKey}\"";
-                }
+                string pw  = string.IsNullOrEmpty(linkSettings.Password) ? "" : $"-pw {linkSettings.Password}";
+                //if (string.IsNullOrWhiteSpace(linkSettings.PrivateKey))
+                //{
+                //    pw = string.IsNullOrEmpty(linkSettings.Password) ? "" : $"-pw {linkSettings.Password}";
+                //}
+                //else
+                //{
+                //    _privateKey = Path.GetTempPath() + linkSettings.Id;
+                //    using (StreamWriter streamWriter = new StreamWriter(_privateKey, false, Encoding.ASCII))
+                //    {
+                //        streamWriter.Write(linkSettings.PrivateKey);
+                //        streamWriter.Flush();
+                //    }
+                //    pw = $"-i \"{_privateKey}\"";
+                //}
 
                 if (!_putty.Create(parentHwnd, $"-ssh {port} {user} {pw} {server}", 0, 0, width, height, settings))
                 {
