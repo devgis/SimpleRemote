@@ -276,10 +276,17 @@ namespace SimpleRemote.Core
         /// </summary>
         public static DbItemSetting GetRemoteSetting(DbItemRemoteLink itemRemoteLink)
         {
-            if (itemRemoteLink.Type == (int)RemoteType.rdp) return _tableSetting_rdp.FindById(itemRemoteLink.Id);
-            if (itemRemoteLink.Type == (int)RemoteType.ssh) return _tableSetting_ssh.FindById(itemRemoteLink.Id);
-            if (itemRemoteLink.Type == (int)RemoteType.telnet) return _tableSetting_telnet.FindById(itemRemoteLink.Id);
+            //if (itemRemoteLink.Type == (int)RemoteType.rdp) return _tableSetting_rdp.FindById(itemRemoteLink.Id);
+            //if (itemRemoteLink.Type == (int)RemoteType.ssh) return _tableSetting_ssh.FindById(itemRemoteLink.Id);
+            //if (itemRemoteLink.Type == (int)RemoteType.telnet) return _tableSetting_telnet.FindById(itemRemoteLink.Id);
+            //return null;
+
+            //liyafei
+            if (itemRemoteLink.Type == (int)RemoteType.rdp) return (itemRemoteLink.ItemSetting as DbItemSettingRdp);
+            if (itemRemoteLink.Type == (int)RemoteType.ssh) return (itemRemoteLink.ItemSetting as DbItemSettingSsh);
+            if (itemRemoteLink.Type == (int)RemoteType.telnet) return (itemRemoteLink.ItemSetting as DbItemSettingTelnet);
             return null;
+
         }
 
         /// <summary>
@@ -306,40 +313,23 @@ namespace SimpleRemote.Core
         /// </summary>
         public static byte[] GetSshHostKey(string id)
         {
-            if (dicKeys.ContainsKey(id))
-            {
-                return dicKeys[id];
-            }
-            return null;
-            //return  new DbSshHostKeys { id = id, value = value }; ;  //liyafei 
             return _tableSshHostKeys.FindById(id)?.value;
         }
-
-        static Dictionary<string, byte[]> dicKeys = new Dictionary<string, byte[]>();
 
         /// <summary>
         /// 设置指定ssh主机在本地保存的密钥
         /// </summary>
         public static void SetSshHostKey(string id, byte[] value)
         {
-            if (dicKeys.ContainsKey(id))
-            {
-                dicKeys[id] = value;
-            }
-            else
-            {
-                dicKeys.Add(id,value);
-            }
-            return;
-            DbSshHostKeys dbSshHostKeys = _tableSshHostKeys.FindById(id); 
+            DbSshHostKeys dbSshHostKeys = _tableSshHostKeys.FindById(id);
             if (dbSshHostKeys == null)
             {
                 dbSshHostKeys = new DbSshHostKeys { id = id, value = value };
-                //_tableSshHostKeys.Insert(dbSshHostKeys);
+                _tableSshHostKeys.Insert(dbSshHostKeys);
                 return;
             }
             dbSshHostKeys.value = value;
-            //_tableSshHostKeys.Update(dbSshHostKeys);
+            _tableSshHostKeys.Update(dbSshHostKeys);
         }
 
         /// <summary>
@@ -366,9 +356,8 @@ namespace SimpleRemote.Core
         /// <returns></returns>
         public static DbPuttyColor GetPuttyColor(string name)
         {
-            return new DbPuttyColor(); //liyafie 
-            //if (string.IsNullOrEmpty(name)) name = "默认配色";
-            //return _tablePuttyColor.FindById(name);
+            if (string.IsNullOrEmpty(name)) name = "默认配色";
+            return _tablePuttyColor.FindById(name);
         }
 
         /// <summary>
@@ -376,7 +365,6 @@ namespace SimpleRemote.Core
         /// </summary>
         public static bool Update(string id, DbItemRemoteLink document)
         {
-            return false; //liyafei modified
             return _tableRemoteLink.Update(id, document);
         }
 

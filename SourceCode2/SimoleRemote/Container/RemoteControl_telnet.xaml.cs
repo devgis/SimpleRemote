@@ -76,22 +76,22 @@ namespace SimpleRemote.Container
 
             Thread thread = new Thread(() =>
              {
-                 Putty.Settings settings = new Putty.Settings();//liyafei modified
-                 //{
-                 //    fontname = lastSettingTelnet.FontName,
-                 //    fontsize = lastSettingTelnet.FontSize,
-                 //    curtype = lastSettingTelnet.Cursor - 1,
-                 //    linecodepage = Encoding.GetEncoding(lastSettingTelnet.Character).BodyName,
-                 //    backspaceisdelete = lastSettingTelnet.Fallbackkeys - 1,
-                 //    mouseisxterm = lastSettingTelnet.MouseAction - 1,
-                 //    puttycolor = new Putty.PuttyColor(lastSettingTelnet.GetPuttyColor()),
-                 //    rxvthomeend = lastSettingTelnet.HomeAndEnd - 1,
-                 //    functionkeys = lastSettingTelnet.FnAndKeypad - 1,
-                 //    cjkambigwide = lastSettingTelnet.CJKAmbigWide.Value,
-                 //    capslockcyr = lastSettingTelnet.CapsLockCyr.Value,
-                 //    crimplieslf = lastSettingTelnet.CRImpliesLF.Value,
-                 //    lfimpliescr = lastSettingTelnet.LFImpliesCR.Value,
-                 //};
+                 Putty.Settings settings = new Putty.Settings
+                 {
+                     fontname = lastSettingTelnet.FontName,
+                     fontsize = lastSettingTelnet.FontSize,
+                     curtype = lastSettingTelnet.Cursor - 1,
+                     linecodepage = Encoding.GetEncoding(lastSettingTelnet.Character).BodyName,
+                     backspaceisdelete = lastSettingTelnet.Fallbackkeys - 1,
+                     mouseisxterm = lastSettingTelnet.MouseAction - 1,
+                     puttycolor = new Putty.PuttyColor(lastSettingTelnet.GetPuttyColor()),
+                     rxvthomeend = lastSettingTelnet.HomeAndEnd - 1,
+                     functionkeys = lastSettingTelnet.FnAndKeypad - 1,
+                     cjkambigwide = lastSettingTelnet.CJKAmbigWide.Value,
+                     capslockcyr = lastSettingTelnet.CapsLockCyr.Value,
+                     crimplieslf = lastSettingTelnet.CRImpliesLF.Value,
+                     lfimpliescr = lastSettingTelnet.LFImpliesCR.Value,
+                 };
                  string user = string.Empty;
                  string pw = string.Empty;
                  if (!string.IsNullOrWhiteSpace(linkSettings.UserName))

@@ -47,7 +47,10 @@ namespace SimpleRemote.Container.RemoteSetting
 
         public override void UnLoaded()
         {
-            ItemSetting.PropertyChanged -= PropertyChanged;
+            if (ItemSetting != null)
+            {
+                ItemSetting.PropertyChanged -= PropertyChanged;
+            }
         }
 
         private void PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

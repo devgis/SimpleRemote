@@ -325,7 +325,6 @@ namespace SimpleRemote.Modes
         /// <returns></returns>
         public override DbItemSetting GetLastSetting()
         {
-            return FromDefault();//liyafei modified 
             DbItemSetting lastSetting = new DbItemSettingRdp
             {
                 OpenMode = OpenMode == 0 ? _defaultSetting.OpenMode : OpenMode,

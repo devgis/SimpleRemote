@@ -1,0 +1,7 @@
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.csprojAssemblyReference.cache
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.ErrorForm.resources
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.Properties.Resources.resources
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.csproj.GenerateResource.cache
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.csproj.CoreCompileInputs.cache
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.exe
+C:\Work\GitHub\SimpleRemote\SourceCode\AutoUpdate\obj\Debug\AutoUpdate.pdb

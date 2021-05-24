@@ -8,6 +8,7 @@
     xmlns:control="clr-namespace:SimpleRemote.Controls"
     xmlns:dd="clr-namespace:SimpleRemote.Controls.WpfDragDrop"
     xmlns:core="clr-namespace:SimpleRemote.Core"
+     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -41,7 +42,6 @@
                 <KeyBinding Key="Enter" Command="{StaticResource Selection}" />
             </TextBox.InputBindings>
         </TextBox>
-
         <TreeView
             x:Name="PART_RemoteTree"
             Margin="0,26,0,0"
@@ -72,32 +72,33 @@
                         Click="MenuItem_Click"
                         Header="连接(独立窗口)" />
                     <Separator />
-                    <MenuItem
-                        x:Name="MenuItem_New"
-                        Click="MenuItem_Click"
-                        Header="新建">
-                        <MenuItem
+                    <!--<MenuItem
                             x:Name="MenuItem_Newrdp"
                             Click="MenuItem_Click"
                             Header="RDP连接"
                             InputGestureText="Ctrl+Shift+R" />
-                        <MenuItem
+                    <MenuItem
                             x:Name="MenuItem_Newssh"
                             Click="MenuItem_Click"
                             Header="SSH连接"
                             InputGestureText="Ctrl+Shift+S" />
-                        <MenuItem
+                    <MenuItem
                             x:Name="MenuItem_NewTelnet"
                             Click="MenuItem_Click"
                             Header="Telnet连接"
-                            InputGestureText="Ctrl+Shift+T" />
-                    </MenuItem>
-                    <MenuItem
+                            InputGestureText="Ctrl+Shift+T" />-->
+                    <!--<MenuItem
+                        x:Name="MenuItem_New"
+                        Click="MenuItem_Click"
+                        Header="新建">
+                        
+                    </MenuItem>-->
+                    <!--<MenuItem
                         x:Name="MenuItem_NewDir"
                         Click="MenuItem_Click"
                         Header="新建目录"
-                        InputGestureText="Ctrl+Shift+N" />
-                    <Separator />
+                        InputGestureText="Ctrl+Shift+N" />-->
+                    <!--<Separator />
                     <MenuItem
                         x:Name="MenuItem_Shear"
                         Click="MenuItem_Click"
@@ -113,8 +114,8 @@
                         Click="MenuItem_Click"
                         Header="粘贴"
                         InputGestureText="Ctrl+V" />
-                    <Separator />
-                    <MenuItem
+                    <Separator />-->
+                    <!--<MenuItem
                         x:Name="MenuItem_Rename"
                         Click="MenuItem_Click"
                         Header="重命名"
@@ -123,7 +124,12 @@
                         x:Name="MenuItem_Delete"
                         Click="MenuItem_Click"
                         Header="删除"
-                        InputGestureText="Delete" />
+                        InputGestureText="Delete" />-->
+                    <MenuItem
+                        x:Name="MenuItem_Refresh"
+                        Click="MenuItem_Refresh_Click"  
+                        Header="刷新" />
+                    <Separator />
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>
@@ -318,5 +324,9 @@
                     IsExpanded="{Binding Path=IsExpander2, Mode=TwoWay}" />
             </Grid>
         </ScrollViewer>
+        <StackPanel x:Name="Panel_Animation" Margin="0,0,0,0" VerticalAlignment="Center" Visibility="Collapsed">
+            <TextBlock TextWrapping="Wrap" Text="正在连接，请稍后" FontSize="18" Height="30" HorizontalAlignment="Center"/>
+            <mah:MetroProgressBar IsIndeterminate="True"/>
+        </StackPanel>
     </Grid>
 </UserControl>

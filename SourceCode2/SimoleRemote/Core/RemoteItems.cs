@@ -1,9 +1,11 @@
 ﻿using SimpleRemote.Container;
 using SimpleRemote.Controls;
 using SimpleRemote.Modes;
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace SimpleRemote.Core
 {
@@ -96,10 +98,19 @@ namespace SimpleRemote.Core
 
         private static RemoteTreeViewItem GetParentItem(RemoteTreeViewItem item, out DbRemoteTree parentTree, out ItemCollection items)
         {
-            RemoteTreeViewItem parentItem = item.Parent is RemoteTreeViewItem ? (RemoteTreeViewItem)item.Parent : null;
-            parentTree = parentItem == null ? _remoteTree : parentItem.RemoteTree;
-            items = parentItem == null ? _remoteTreeView.Items : parentItem.Items;
-            return parentItem;
+            parentTree = null;
+            items = null;
+            try {
+                RemoteTreeViewItem parentItem = item.Parent is RemoteTreeViewItem ? (RemoteTreeViewItem)item.Parent : null;
+                parentTree = parentItem == null ? _remoteTree : parentItem.RemoteTree;
+                items = parentItem == null ? _remoteTreeView.Items : parentItem.Items;
+                return parentItem;
+            }
+            catch
+            {
+                return null;
+            }
+            
         }
 
         /// <summary>
@@ -205,7 +216,9 @@ namespace SimpleRemote.Core
         {
             if (treeTtem.RemoteType == RemoteType.dir) return;
             IRemoteControl remoteControl = null;
-            DbItemRemoteLink itemRemoteLink = DatabaseServices.GetRemoteLink(treeTtem.uuid);
+            //liyafei
+            //DbItemRemoteLink itemRemoteLink = DatabaseServices.GetRemoteLink(treeTtem.uuid);
+            DbItemRemoteLink itemRemoteLink = RequestDAL.GetItemRemoteLink(treeTtem.uuid);
             if (string.IsNullOrEmpty(itemRemoteLink.Server))
             {
                 throw new Exception("服务器地址不能为空。");
@@ -213,7 +226,10 @@ namespace SimpleRemote.Core
 
             DbItemSetting itemSetting = DatabaseServices.GetRemoteSetting(itemRemoteLink);
             if (openMode == DbItemSetting.OPEN_DEFAULT) openMode = itemSetting.DefaultSetting.GetOpenMode();
-
+            if (_remoteRunTime == null)
+            {
+                _remoteRunTime = new Dictionary<string, RemoteRunTime>();
+            }
             //如果指定的远程桌面有在后台运行,则跳转
             if (_remoteRunTime.ContainsKey(treeTtem.uuid))
             {
@@ -238,70 +254,81 @@ namespace SimpleRemote.Core
             }
         }
 
-        //liyafei add
         public static void Open(DbItemRemoteLink itemRemoteLink, int openMode)
         {
             string uuid = itemRemoteLink.Id;
             IRemoteControl remoteControl = null;
 
-            DbItemSetting itemSetting = itemRemoteLink.ItemSetting;
+            DbItemSetting itemSetting = DatabaseServices.GetRemoteSetting(itemRemoteLink);
             if (openMode == DbItemSetting.OPEN_DEFAULT) openMode = itemSetting.DefaultSetting.GetOpenMode();
-            //if (_remoteRunTime == null)
-            //{
-            //    _remoteRunTime = new Dictionary<string, RemoteRunTime>();
-            //}
-            ////如果指定的远程桌面有在后台运行,则跳转
-            //if (_remoteRunTime.ContainsKey(uuid))
-            //{
-            //    var value = _remoteRunTime[uuid];
-            //    if (value.OpenMode == openMode)
-            //    {
-            //        value.RemoteControl.Jump();
-            //        return;
-            //    }
-            //    value.RemoteControl.Remove();
-            //    _remoteRunTime.Remove(uuid);
-            //}
+            if (_remoteRunTime == null)
+            {
+                _remoteRunTime = new Dictionary<string, RemoteRunTime>();
+            }
+            //如果指定的远程桌面有在后台运行,则跳转
+            if (_remoteRunTime.ContainsKey(uuid))
+            {
+                var value = _remoteRunTime[uuid];
+                if (value.OpenMode == openMode)
+                {
+                    value.RemoteControl.Jump();
+                    return;
+                }
+                value.RemoteControl.Remove();
+                _remoteRunTime.Remove(uuid);
+            }
 
             //开始连接远程桌面
-            if (openMode == DbItemSetting.OPEN_WINDOW) remoteControl = new RemoteWinControl();
+            if (openMode == DbItemSetting.OPEN_WINDOW)
+            {
+                remoteControl = new RemoteWinControl();
+                //liyafei add
+                (remoteControl as RemoteWinControl).Closed += new EventHandler((o,e)=> {
+                    Application.Current.Shutdown();
+                });
+            }
             else remoteControl = new RemoteTabControl();
             remoteControl.Open(itemRemoteLink, itemSetting, openMode == DbItemSetting.OPEN_TAB);
-            //if (itemRemoteLink.Type == 1)
-            //{
-            //    _remoteRunTime.Add(uuid, new RemoteRunTime(openMode, remoteControl));
-            //    remoteControl.OnRemove += (sender, e) => _remoteRunTime.Remove(uuid);
-            //}
+            if (itemRemoteLink.Type ==1)
+            {
+                _remoteRunTime.Add(uuid, new RemoteRunTime(openMode, remoteControl));
+                remoteControl.OnRemove += (sender, e) => _remoteRunTime.Remove(uuid);
+            }
         }
 
 
         /// <summary>
         /// 筛选远程条目
         /// </summary>
-        public static void Screening(string text)
+        public static void Screening(string text,TreeView PART_RemoteTree)
         {
-            if (string.IsNullOrEmpty(text) && _isSelection)
+            if (!string.IsNullOrEmpty(text) )
             {
-                _remoteTreeView.Items.Clear();
-                LoadItems(_remoteTreeView.Items, _remoteTree);
-                _isSelection = false;
+                if(PART_RemoteTree != null)
+                {
+                    PART_RemoteTree.Items.Clear();
+                    //LoadItems(_remoteTreeView.Items, _remoteTree);
+
+                    foreach (var item in RequestDAL.Items.Where(p=>p.Name.Contains(text)))
+                    {
+                        RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
+                        PART_RemoteTree.Items.Add(treeItem);
+                    }
+                    PART_RemoteTree.UpdateLayout();
+                }
             }
             else
             {
-                if (!_isSelection)
-                {
-                    _isSelection = true;
-                    UpdateExpandTreeItem();
-                }
-
-                var list = _remoteTree.Screening(text);
-                _remoteTreeView.Items.Clear();
-                foreach (var item in list)
+                //Load all
+                PART_RemoteTree.Items.Clear();
+                foreach (var item in RequestDAL.Items)
                 {
                     RemoteTreeViewItem treeItem = new RemoteTreeViewItem(item);
-                    _remoteTreeView.Items.Add(treeItem);
+                    PART_RemoteTree.Items.Add(treeItem);
                 }
+                PART_RemoteTree.UpdateLayout();
             }
+
         }
 
         /// <summary>
@@ -310,19 +337,23 @@ namespace SimpleRemote.Core
         /// <param name="items"></param>
         public static void UpdateExpandTreeItem(ItemCollection items=null)
         {
-            if (items == null)
+            if (items == null&& _remoteTreeView!=null)
             {
                 UserSettings.RemoteTreeExpand.Clear();
                 items = _remoteTreeView.Items;
             }
-            foreach (RemoteTreeViewItem item in items)
+            if(items!=null)
             {
-                if (item.Items.Count > 0)
+                foreach (RemoteTreeViewItem item in items)
                 {
-                    UpdateExpandTreeItem(item.Items);
+                    if (item.Items.Count > 0)
+                    {
+                        UpdateExpandTreeItem(item.Items);
+                    }
+                    if (item.IsExpanded) UserSettings.RemoteTreeExpand.Add(item.uuid);
                 }
-                if (item.IsExpanded) UserSettings.RemoteTreeExpand.Add(item.uuid);
             }
+            
         }
 
         /// <summary>
@@ -400,7 +431,9 @@ namespace SimpleRemote.Core
         /// </summary>
         public static void GetItemRemoteLink(string uuid)
         {
-            ItemRemoteLink = DatabaseServices.GetRemoteLink(uuid);
+            //liyafei changed this 
+            //ItemRemoteLink = DatabaseServices.GetRemoteLink(uuid);
+            ItemRemoteLink = RequestDAL.GetItemRemoteLink(uuid);
         }
 
         /// <summary>

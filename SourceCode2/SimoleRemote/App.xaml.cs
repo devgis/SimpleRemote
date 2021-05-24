@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Runtime.InteropServices;
+using SimpleRemote.Core;
 using SimpleRemote.Modes;
 
 namespace SimpleRemote
@@ -29,7 +30,7 @@ namespace SimpleRemote
 
         private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("系统发生未知异常:"+e.Exception.Message+"\r\nStackTrace:"+e.Exception.StackTrace, "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show("系统发生未知异常:" + e.Exception.Message + "\r\nStackTrace:" + e.Exception.StackTrace, "系统提示", MessageBoxButton.OK, MessageBoxImage.Error);
             Current.Shutdown();
         }
 
@@ -47,13 +48,14 @@ namespace SimpleRemote
                 string username = e.Args[2];
                 string password = e.Args[3];
                 string privatekey = null;
-                if (e.Args.Length>=5)
+                if (e.Args.Length >= 5)
                 {
                     privatekey = e.Args[4];
                 }
 
                 DbItemRemoteLink link = new DbItemRemoteLink();
                 link.Name = servername;
+                link.Id = link.Name.Replace(".", "_").Replace(":", "_");
                 link.Server = servername;
                 link.Password = password;
                 link.UserName = username;
@@ -61,11 +63,11 @@ namespace SimpleRemote
                 link.ExternalIsMaximize = true;
                 link.ExternalWindowHeight = 600;
                 link.ExternalWindowWidth = 800;
-                if(!string.IsNullOrEmpty(privatekey))
+                if (!string.IsNullOrEmpty(privatekey))
                 {
                     link.PrivateKey = privatekey;
                 }
-                
+
                 switch (protype.ToLower())
                 {
                     case "ssh":
@@ -86,12 +88,16 @@ namespace SimpleRemote
                         link.ItemSetting = new DbItemSettingSsh();
                         break;
                 }
+
+                
+                //main.Show();
                 Current.Dispatcher.Invoke(() =>
                 {
+                    MainWindow mainform = new MainWindow();
                     RemoteItems.Open(link, DbItemSetting.OPEN_WINDOW);
                 });
             }
-            
+
         }
     }
 }

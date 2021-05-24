@@ -62,7 +62,7 @@
                         <ItemsPresenter x:Name="ItemsHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </StackPanel>
                     <ControlTemplate.Triggers>
-                        <!--  根据类型设置图标  -->
+                        <!--  根据类型设置图标  --><!--
                         <Trigger Property="RemoteType" Value="{x:Static Modes:RemoteType.dir}">
                             <Setter TargetName="Image" Property="Source" Value="/Icon/RemoteType.DIR.png" />
                         </Trigger>
@@ -74,6 +74,14 @@
                         </Trigger>
                         <Trigger Property="RemoteType" Value="{x:Static Modes:RemoteType.telnet}">
                             <Setter TargetName="Image" Property="Source" Value="/Icon/RemoteType.TELNET.png" />
+                        </Trigger>-->
+
+                        <!--  根据状态设置图标  -->
+                        <Trigger Property="State" Value="在线">
+                            <Setter TargetName="Image" Property="Source" Value="/Icon/OK.png" />
+                        </Trigger>
+                        <Trigger Property="State" Value="掉线">
+                            <Setter TargetName="Image" Property="Source" Value="/Icon/OFF.png" />
                         </Trigger>
 
                         <Trigger Property="IsExpanded" Value="False">

@@ -178,8 +178,12 @@ namespace SimpleRemote.Core
             {
                 _notifyIcon = value;
                 MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-                if (value) mainWindow.ShowNotifyIcon();
-                else mainWindow.CloseNotifyIcon();
+               if(mainWindow!=null)
+                {
+                    if (value) mainWindow.ShowNotifyIcon();
+                    else mainWindow.CloseNotifyIcon();
+                }
+                
             }
 
             #endregion 托盘图标

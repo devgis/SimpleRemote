@@ -64,7 +64,6 @@ namespace SimpleRemote.Modes
         /// </summary>
         public bool GetIsFullscreen()
         {
-            return SizeIndex == DESKSIZE_FULLSCREEN; //liyafei edited
             return SizeIndex == OPEN_DEFAULT ? DefaultSetting.SizeIndex == DESKSIZE_FULLSCREEN : SizeIndex == DESKSIZE_FULLSCREEN;
         }
         /// <summary>

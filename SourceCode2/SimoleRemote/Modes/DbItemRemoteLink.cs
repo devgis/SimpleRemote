@@ -22,7 +22,6 @@ namespace SimpleRemote.Modes
         public double ExternalWindowWidth { get; set; }
         public double ExternalWindowHeight{ get; set; }
         public bool ExternalIsMaximize { get; set; }
-        //liyafei add
 
         public DbItemSetting ItemSetting { get; set; }
     }

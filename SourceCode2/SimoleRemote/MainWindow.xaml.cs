@@ -21,7 +21,7 @@ namespace SimpleRemote
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow,IDisposable
     {
         private Home PART_Home;
         private TaskbarIcon PART_TaskbarIcon;
@@ -247,6 +247,11 @@ namespace SimpleRemote
             {
                 tabItem.Closed?.Invoke(tabItem);
             }
+        }
+
+        public void Dispose()
+        {
+            Application.Current.Shutdown();
         }
     }
 }

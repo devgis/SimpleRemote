@@ -80,8 +80,7 @@ namespace SimpleRemote.Container
                 _remoteControl.FullScreen = FullScreen;
                 _remoteControl.MouseMoveProc = MouseMoveProc;
 
-                //_remoteControl.Connect(linkSettings, itemSetting.GetLastSetting()); // liyafei modified
-                _remoteControl.Connect(linkSettings, itemSetting); // liyafei modified
+                _remoteControl.Connect(linkSettings, itemSetting.GetLastSetting());
                 _startFullScreen = itemSetting.GetIsFullscreen();
                 _fullScreenWindow.ConnectionTitle = linkSettings.Name;
                

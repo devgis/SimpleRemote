@@ -104,21 +104,21 @@ namespace SimpleRemote.Container
                 };
 
                 string user = string.IsNullOrEmpty(linkSettings.UserName) ? "" : $"-l {linkSettings.UserName}";
-                string pw  = string.IsNullOrEmpty(linkSettings.Password) ? "" : $"-pw {linkSettings.Password}";
-                //if (string.IsNullOrWhiteSpace(linkSettings.PrivateKey))
-                //{
-                //    pw = string.IsNullOrEmpty(linkSettings.Password) ? "" : $"-pw {linkSettings.Password}";
-                //}
-                //else
-                //{
-                //    _privateKey = Path.GetTempPath() + linkSettings.Id;
-                //    using (StreamWriter streamWriter = new StreamWriter(_privateKey, false, Encoding.ASCII))
-                //    {
-                //        streamWriter.Write(linkSettings.PrivateKey);
-                //        streamWriter.Flush();
-                //    }
-                //    pw = $"-i \"{_privateKey}\"";
-                //}
+                string pw = null;
+                if (string.IsNullOrWhiteSpace(linkSettings.PrivateKey))
+                {
+                    pw = string.IsNullOrEmpty(linkSettings.Password) ? "" : $"-pw {linkSettings.Password}";
+                }
+                else
+                {
+                    _privateKey = Path.GetTempPath() + linkSettings.Id;
+                    using (StreamWriter streamWriter = new StreamWriter(_privateKey, false, Encoding.ASCII))
+                    {
+                        streamWriter.Write(linkSettings.PrivateKey);
+                        streamWriter.Flush();
+                    }
+                    pw = $"-i \"{_privateKey}\"";
+                }
 
                 if (!_putty.Create(parentHwnd, $"-ssh {port} {user} {pw} {server}", 0, 0, width, height, settings))
                 {
