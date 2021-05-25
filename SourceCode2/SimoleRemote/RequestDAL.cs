@@ -220,7 +220,7 @@ namespace SimpleRemote
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        RemoteItems.Open(link, DbItemSetting.OPEN_DEFAULT);
+                        RemoteItems.Open(link, DbItemSetting.OPEN_DEFAULT,link.Server);
                     });
                     loadingPanel.Visibility = Visibility.Collapsed;
 

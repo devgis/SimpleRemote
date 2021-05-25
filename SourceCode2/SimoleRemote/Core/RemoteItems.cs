@@ -254,7 +254,7 @@ namespace SimpleRemote.Core
             }
         }
 
-        public static void Open(DbItemRemoteLink itemRemoteLink, int openMode)
+        public static void Open(DbItemRemoteLink itemRemoteLink, int openMode,string windowTitle)
         {
             string uuid = itemRemoteLink.Id;
             IRemoteControl remoteControl = null;
@@ -283,6 +283,7 @@ namespace SimpleRemote.Core
             {
                 remoteControl = new RemoteWinControl();
                 //liyafei add
+                (remoteControl as RemoteWinControl).Title = windowTitle;
                 (remoteControl as RemoteWinControl).Closed += new EventHandler((o,e)=> {
                     Application.Current.Shutdown();
                 });

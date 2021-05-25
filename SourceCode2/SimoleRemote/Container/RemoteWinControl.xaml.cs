@@ -54,7 +54,7 @@ namespace SimpleRemote.Container
             _itemRemoteLink = linkSettings;
             if (linkSettings.Password == null) linkSettings.Password = "";
 
-            Title = linkSettings.Name;
+            //Title = linkSettings.Name; //liyafei
             Window mainWindow = Application.Current.MainWindow;
             Width = linkSettings.ExternalWindowWidth > MinWidth ? linkSettings.ExternalWindowWidth : mainWindow.Width;
             Height = linkSettings.ExternalWindowHeight > MinHeight ? linkSettings.ExternalWindowHeight : mainWindow.Height;

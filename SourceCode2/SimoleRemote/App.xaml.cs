@@ -47,10 +47,14 @@ namespace SimpleRemote
                 string servername = e.Args[1];
                 string username = e.Args[2];
                 string password = e.Args[3];
-                string privatekey = null;
+                string title = null;
                 if (e.Args.Length >= 5)
                 {
-                    privatekey = e.Args[4];
+                    title = e.Args[4];
+                }
+                else
+                {
+                    title = servername;
                 }
 
                 DbItemRemoteLink link = new DbItemRemoteLink();
@@ -63,10 +67,7 @@ namespace SimpleRemote
                 link.ExternalIsMaximize = true;
                 link.ExternalWindowHeight = 600;
                 link.ExternalWindowWidth = 800;
-                if (!string.IsNullOrEmpty(privatekey))
-                {
-                    link.PrivateKey = privatekey;
-                }
+                
 
                 switch (protype.ToLower())
                 {
@@ -89,12 +90,13 @@ namespace SimpleRemote
                         break;
                 }
 
+                string WindowTitle = $"【{title}】【{Process.GetCurrentProcess().Id}】";
                 
                 //main.Show();
                 Current.Dispatcher.Invoke(() =>
                 {
                     MainWindow mainform = new MainWindow();
-                    RemoteItems.Open(link, DbItemSetting.OPEN_WINDOW);
+                    RemoteItems.Open(link, DbItemSetting.OPEN_WINDOW, WindowTitle);
                 });
             }
 
